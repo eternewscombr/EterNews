@@ -7,9 +7,20 @@
     <meta name="theme-color" content="#000000">
 
     <!-- Favicon -->
-    <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" type="image/x-icon">
-    <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)">
-    <link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)">
+    <link id="favicon" rel="icon" type="image/x-icon" href="LOGOS/icon_EterNews-preto.ico">
+<script>
+(function () {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var link = document.getElementById('favicon');
+    function apply() {
+        link.href = mq.matches ? 'icon/icon_EterNews-branco.ico'
+                               : 'LOGOS/icon_EterNews-preto.ico';
+    }
+    apply();
+    if (mq.addEventListener) mq.addEventListener('change', apply);
+    else if (mq.addListener) mq.addListener(apply);
+})();
+</script>
 
     <!-- Fonts — Inter (mesmo do _ETER.html) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
