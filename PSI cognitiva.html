@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0e16">
+<link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+<link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)">
+<link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)">
+<title>Eter News - Desafio Mental</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#0c0e16;--panel:#151926;--panel2:#1d2236;--line:#2a3150;--tx:#e8ebf5;--mu:#8d96b2;--ok:#3ddc97;--bad:#ff6b7a;--gold:#ffc857;--c:#5b8cff}
+body[data-l="1"]{--c:#5b8cff}body[data-l="2"]{--c:#a07bff}body[data-l="3"]{--c:#3ddc97}body[data-l="4"],body[data-l="5"]{--c:#ffc857}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,system-ui,sans-serif;color:var(--tx);line-height:1.5;overflow-x:hidden;min-height:100vh;
+background:radial-gradient(900px 500px at 10% -10%,rgba(91,140,255,.15),transparent 60%),radial-gradient(800px 500px at 100% 0,rgba(160,123,255,.12),transparent 60%),var(--bg);
+padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.ib{width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--line);font-size:1.15rem}
+.brand{font-weight:700}
+.steps{display:flex;gap:6px;margin-bottom:12px}
+.step{flex:1;padding:8px 2px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:.74rem;color:var(--mu);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step.on{border-color:var(--c);color:var(--tx);box-shadow:0 0 0 1px var(--c) inset}
+.step.done{color:var(--ok)}
+.scr{display:none}.scr.on{display:block;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes glow{50%{box-shadow:0 0 30px rgba(61,220,151,.75)}}
+@keyframes pop{from{transform:scale(.93);opacity:.55}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px}
+.ctr{text-align:center}.mu{color:var(--mu)}.sm{font-size:.82rem}
+h1{font-size:clamp(1.8rem,8vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:8px}
+h2{font-size:1.5rem;font-weight:800;margin:10px 0 6px}
+.hero{margin:8px 0 20px}
+.ph{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);margin-bottom:10px}
+.ph small{display:block;color:var(--mu)}.pi{font-size:1.6rem}.ck{margin-left:auto;color:var(--ok);font-weight:800}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;padding:0 22px;border-radius:14px;background:var(--c);color:#0c0e16;font-weight:700;margin-top:14px;transition:transform .12s}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.45}
+.btn.ghost{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .btn{flex:1 1 150px}
+.tag{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--panel2);color:var(--c);font-size:.82rem;font-weight:600}
+.how{list-style:none;padding:0}.how li{padding:10px 14px;background:var(--panel2);border-radius:12px;margin-top:8px;font-size:.92rem}
+
+/* intro */
+.head{font-size:clamp(1.5rem,7vw,2rem);font-weight:800;margin:12px 0 8px;color:var(--c);letter-spacing:.02em;line-height:1.15}
+.quote{font-size:1.1rem;font-weight:500;padding:12px 14px;border-left:4px solid var(--c);background:var(--panel2);border-radius:0 12px 12px 0;margin-bottom:12px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.info div{background:var(--panel2);border-radius:12px;padding:10px 12px;border:1px solid var(--line)}
+.info small{display:block;color:var(--mu);font-size:.72rem}.info b{font-size:1.25rem}
+.note{font-size:.85rem;color:var(--mu);margin:4px 0 10px}
+
+/* cronômetro */
+.tmr{position:sticky;top:0;z-index:6;margin:0 0 12px;padding:10px 14px 12px;border-radius:16px;background:rgba(21,25,38,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);transition:border-color .3s,background .3s}
+.tmr[hidden]{display:none}
+.tmr-r{display:flex;align-items:center;gap:10px}
+.tmr-l{font-size:.75rem;font-weight:700;letter-spacing:.12em;color:var(--mu);display:flex;gap:6px;align-items:center}
+.tmr-p{color:var(--bad);font-weight:800;opacity:0}
+.tmr-p.show{animation:pen .9s ease-out}
+@keyframes pen{0%{opacity:0;transform:translateY(6px)}15%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+.tmr-v{margin-left:auto;font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;transform-origin:right center;transition:color .3s}
+.tmr-b{height:8px;border-radius:99px;background:var(--panel2);overflow:hidden;margin-top:8px}
+.tmr-b i{display:block;height:100%;width:100%;background:var(--c);transition:width .1s linear,background .3s}
+.tmr[data-s=warn]{border-color:var(--gold)}
+.tmr[data-s=warn] .tmr-v{color:var(--gold);animation:pulse 1s infinite}
+.tmr[data-s=warn] .tmr-b i{background:var(--gold)}
+.tmr[data-s=danger]{border-color:var(--bad)}
+.tmr[data-s=danger] .tmr-v{color:var(--bad);animation:pulse .55s infinite}
+.tmr[data-s=danger] .tmr-b i{background:var(--bad)}
+.tmr[data-s=crit]{border-color:var(--bad);background:rgba(58,18,26,.96);box-shadow:0 0 20px rgba(255,107,122,.35)}
+.tmr[data-s=crit] .tmr-v{color:var(--bad);animation:tremorT .14s infinite}
+.tmr[data-s=crit] .tmr-b i{background:var(--bad)}
+@keyframes pulse{50%{transform:scale(1.1)}}
+@keyframes tremorT{0%,100%{transform:translate(0)}25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
+@keyframes tremor{0%,100%{transform:translate(0)}25%{transform:translate(1px,0)}50%{transform:translate(0,1px)}75%{transform:translate(-1px,0)}}
+@keyframes vig{50%{opacity:.35}}
+body.tense .scr.on>.card{animation:tremor .2s infinite}
+body.tense::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:4;box-shadow:inset 0 0 70px rgba(255,70,90,.35);animation:vig 1s infinite}
+
+/* faixa de regra */
+.rb{display:flex;flex-direction:column;gap:1px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 22%,var(--panel2)),var(--panel2));border:1px solid var(--c);margin-bottom:12px}
+.rb small{color:var(--mu);font-size:.7rem;letter-spacing:.12em;font-weight:700}
+.rb b{font-size:1.15rem;letter-spacing:.04em;color:var(--c);line-height:1.2}
+.rb span{font-size:.86rem}
+
+.hud{display:flex;gap:8px;margin-bottom:12px}
+.chip{flex:1;background:var(--panel2);border-radius:12px;padding:6px 10px;min-width:0}.chip small{display:block;color:var(--mu);font-size:.7rem;white-space:nowrap}.chip b{font-size:1.1rem}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--c);transition:width .3s}
+.fb{min-height:26px;text-align:center;font-weight:600;margin:8px 0;font-size:.95rem}.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+
+/* fase 1 */
+.word{display:grid;place-items:center;height:130px;margin-top:12px;border-radius:18px;background:var(--panel2);border:2px solid var(--line);font-size:clamp(2.1rem,11vw,3.3rem);font-weight:800;letter-spacing:1px}
+.word.pop{animation:pop .12s ease-out}
+.word.ok{border-color:var(--ok);box-shadow:0 0 24px rgba(61,220,151,.25)}.word.bad{border-color:var(--bad);animation:shake .25s}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ans button{min-height:64px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;transition:background .1s,border-color .1s}
+.ans button:active{transform:scale(.97)}
+.ans button.good{border-color:var(--ok);background:rgba(61,220,151,.2)}
+.ans button.bad{border-color:var(--bad);background:rgba(255,107,122,.18)}
+.sw{width:18px;height:18px;border-radius:50%;display:inline-block}
+
+/* fase 2 */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px auto 14px;max-width:460px}
+.mc{position:relative;aspect-ratio:1;perspective:600px;padding:0}
+.mc .in{position:absolute;inset:0;transition:transform .3s;transform-style:preserve-3d}
+.mc.up .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:grid;place-items:center;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);color:var(--mu);font-size:1.5rem;font-weight:700}
+.back{transform:rotateY(180deg);background:linear-gradient(145deg,color-mix(in srgb,var(--k) 62%,#2a3150),color-mix(in srgb,var(--k) 32%,#1d2236));border:2px solid var(--line);font-size:clamp(1.7rem,8vw,2.5rem)}
+.mc.found .back{border-color:var(--ok);animation:glow .6s;box-shadow:0 0 14px rgba(61,220,151,.35);filter:brightness(1.12)}
+.mc.found::after{content:"✓";position:absolute;z-index:2;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:var(--ok);color:#0c0e16;font-size:.75rem;font-weight:800;display:grid;place-items:center}
+
+/* fases 3 e 4 */
+.grid3{display:grid;gap:5px;margin:10px 0 4px}
+.cell{aspect-ratio:1;min-width:0;border-radius:10px;background:var(--panel2);border:1px solid var(--line);padding:13%;display:grid;place-items:center}
+.cell svg{width:100%;height:100%;display:block;fill:currentColor;pointer-events:none}
+.cell:active{transform:scale(.94)}
+.cell.no{background:rgba(255,107,122,.16);border-color:var(--bad);animation:shake .25s;opacity:.7}
+.cell.yes{background:rgba(61,220,151,.22);border-color:var(--ok);box-shadow:0 0 18px rgba(61,220,151,.5)}
+
+/* resultado */
+.big{width:60px;height:60px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:1.7rem;font-weight:800;border:2px solid var(--c);color:var(--c)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0}
+.stat{background:var(--panel2);border-radius:14px;padding:12px}.stat small{display:block;color:var(--mu);font-size:.75rem}.stat b{font-size:1.25rem}
+.stars{font-size:1.8rem;color:var(--gold);letter-spacing:4px}
+.rate{font-size:clamp(1.6rem,8vw,2.2rem);font-weight:800;letter-spacing:.04em;margin:6px 0 0}
+.pr{display:flex;align-items:center;gap:10px;margin:8px 0;text-align:left;font-size:.88rem}
+.pr span{flex:0 0 110px}.pr .bar{flex:1}.pr b{flex:0 0 42px;text-align:right}
+.term{margin:16px 0;padding:16px;border-radius:16px;background:var(--panel2);border:1px solid var(--gold)}
+.term small{color:var(--mu)}.term b{display:block;font-size:1.4rem;color:var(--gold)}
+.ins{list-style:none;padding:0;text-align:left;margin:12px 0}.ins li{padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-l="0">
+<div class="wrap">
+  <header class="top">
+    <button class="ib" onclick="window.history.back()" aria-label="Voltar">&#8592;</button>
+    <div class="brand">🧠 Desafio Mental</div>
+    <button class="ib" id="snd" onclick="toggleSound()" aria-label="Som" aria-pressed="true">🔊</button>
+  </header>
+  <nav class="steps" id="steps" aria-label="Fases"></nav>
+
+  <div class="tmr" id="tmr" data-s="ok" hidden role="timer">
+    <div class="tmr-r"><span class="tmr-l">⏱️ TEMPO</span><span class="tmr-p" id="tp"></span><span class="tmr-v" id="tv">0s</span></div>
+    <div class="tmr-b"><i id="tb"></i></div>
+  </div>
+
+  <section id="s-start" class="scr on">
+    <div class="hero"><h1>Treine sua mente em quatro desafios</h1>
+    <p class="mu">Velocidade, memória e percepção visual. Todas as fases têm limite de tempo e cada uma é mais difícil que a anterior.</p></div>
+    <div id="phases"></div>
+    <button class="btn" onclick="intro(1)">Iniciar desafio</button>
+  </section>
+
+  <section id="s-intro" class="scr"></section>
+
+  <section id="s-p1" class="scr"><div class="card">
+    <div class="rb" id="rb1"></div>
+    <div class="hud"><div class="chip"><small>Acertos</small><b id="pg1">0/20</b></div><div class="chip"><small>Erros</small><b id="er1">0</b></div><div class="chip"><small>Pontos</small><b id="sc1">0</b></div></div>
+    <div class="bar"><i id="br1"></i></div>
+    <div class="word" id="word"></div>
+    <p class="fb" id="fb1"></p>
+    <div class="ans" id="ans1"></div>
+  </div></section>
+
+  <section id="s-p2" class="scr"><div class="card">
+    <div class="rb" id="rb2"></div>
+    <div class="hud"><div class="chip"><small>🎯 Jogadas</small><b id="mv2">0</b></div><div class="chip"><small>Pares</small><b id="pr2">0/8</b></div><div class="chip"><small>Erros</small><b id="er2">0</b></div><div class="chip"><small>Recorde</small><b id="rc2">-</b></div></div>
+    <p class="fb" id="st2"></p>
+    <div class="board" id="board"></div>
+    <button class="btn ghost" id="hb" onclick="hint()" style="margin-top:0">💡 Dica (−5s)</button>
+  </div></section>
+
+  <section id="s-p3" class="scr"><div class="card">
+    <div class="rb" id="rb3"></div>
+    <div class="hud"><div class="chip"><small>Rodada</small><b id="rd3">1/6</b></div><div class="chip"><small>Erros</small><b id="er3">0</b></div></div>
+    <div class="bar"><i id="br3"></i></div>
+    <div class="grid3" id="g3"></div>
+    <p class="fb" id="fb3"></p>
+  </div></section>
+
+  <section id="s-result" class="scr"></section>
+  <section id="s-final" class="scr"></section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const COL={1:'#5b8cff',2:'#a07bff',3:'#3ddc97',4:'#ffc857'};
+const LV={
+1:{n:'Teste de Interferência',d:'Médio',ico:'🎯',tr:'velocidade e atenção',head:'ATENÇÃO',q:'Ignore o que está escrito e escolha a COR da palavra.',time:50,goal:'20 acertos',note:'O cronômetro começa assim que a primeira palavra aparecer.',how:['A palavra nunca combina com a cor','Responda o mais rápido que conseguir','O próximo desafio aparece logo após a resposta']},
+2:{n:'Labirinto Neural',d:'Intermediário',ico:'🧩',tr:'memória e tempo',head:'MEMÓRIA',q:'Memorize os elementos e encontre os pares.',time:90,goal:'8 pares',note:'As 16 cartas ficam à mostra por 4 segundos. O cronômetro só começa depois disso.',how:['Grade 4 × 4 com 16 cartas','Menos jogadas e menos erros dão mais pontos','Pares encontrados continuam visíveis','A dica custa 5 segundos']},
+3:{n:'Campo de Percepção',d:'Difícil',ico:'🔎',tr:'percepção visual',head:'ACHE O DIFERENTE',q:'Encontre o elemento que possui uma pequena diferença.',time:90,goal:'6 rodadas',note:'O cronômetro começa quando a primeira grade aparecer.',how:['Grades grandes, com dezenas de elementos','A diferença é pequena: pontas, orientação ou rotação','As cores variam e não indicam a resposta','Cada erro custa 2 segundos']},
+4:{n:'Desafio Final',d:'Difícil',ico:'🔥',tr:'percepção, confusão visual e tempo',head:'ACHE O QUE NÃO REPETE',q:'Observe todos os elementos e encontre o único que não possui repetição.',tip:'Ignore a cor: conta só a forma.',time:150,goal:'5 rodadas',note:'A cor não conta, só a forma. O cronômetro começa quando a primeira grade aparecer.',how:['A cor não conta: só a FORMA importa','Cada forma aparece várias vezes, menos uma','As cores variam só para confundir','Cada erro custa 2 segundos']}};
+const SHORT=['Cores','Memória','Diferente','Final'];
+const TERMS={"NEUROPLASTICIDADE":"Capacidade do cérebro de se reorganizar e formar novas conexões neurais","COGNIÇÃO":"Processos mentais que incluem pensamento, conhecimento e julgamento","METACOGNIÇÃO":"Consciência e compreensão dos próprios processos de pensamento","RESILIÊNCIA":"Capacidade de se adaptar e se recuperar diante de adversidades","SINESTESIA":"Condição neurológica em que a estimulação de um sentido ativa outro","HIPERMNÉSIA":"Capacidade de lembrar com detalhes extraordinários","FLUÊNCIA":"Habilidade de gerar ideias rapidamente"};
+
+const S={snd:true,xp:0,ach:[],done:{},ses:{},lv:0,best:{1:0,2:0,3:0,4:0},rec2:0};
+let R={};
+function load(){try{const d=JSON.parse(localStorage.getItem('neuroChallengeData')||'{}');S.xp=d.xp||0;S.ach=d.achievements||[];S.done=d.done||{};if(d.best)Object.assign(S.best,d.best);S.rec2=d.rec2||0}catch(e){}}
+function save(){try{localStorage.setItem('neuroChallengeData',JSON.stringify({xp:S.xp,achievements:S.ach,done:S.done,best:S.best,rec2:S.rec2}))}catch(e){}}
+
+/* som e vibração */
+let AC;
+function tone(f,d=.12,t='sine',v=.07,at=0){if(!S.snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+at;o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g);g.connect(AC.destination);o.start(s);o.stop(s+d)}catch(e){}}
+const sfx={ok(){tone(660,.08);tone(880,.1,'sine',.07,.07)},bad(){tone(180,.16,'triangle',.09)},flip(){tone(420,.05,'sine',.05)},tick(){tone(950,.05,'square',.035)},win(){[523,659,784,1046].forEach((f,i)=>tone(f,.2,'sine',.07,i*.1))}};
+function vib(ms){if(S.snd&&navigator.vibrate&&!matchMedia('(prefers-reduced-motion:reduce)').matches)try{navigator.vibrate(ms)}catch(e){}}
+function toggleSound(){S.snd=!S.snd;$('snd').textContent=S.snd?'🔊':'🔇';$('snd').setAttribute('aria-pressed',S.snd);sfx.flip()}
+
+/* controle de rodadas pendentes: G.n muda ao iniciar/encerrar uma fase e cancela timeouts antigos */
+const G={n:0};
+const later=(f,ms)=>{const g=G.n;return setTimeout(()=>{if(g===G.n)f()},ms)};
+
+/* cronômetro global */
+const TM={iv:0,total:0,t0:0,pen:0,end:null,on:false,last:-1};
+function tmDraw(r){const f=clamp(r/TM.total,0,1),s=r<=5?'crit':(r<=10||f<=.15)?'danger':f<=.3?'warn':'ok';
+const t=$('tmr');t.dataset.s=s;$('tv').textContent=r>=10?Math.ceil(r)+'s':Math.max(0,r).toFixed(1)+'s';$('tb').style.width=f*100+'%';
+document.body.classList.toggle('tense',s==='crit'&&TM.on)}
+function tmReset(total){clearInterval(TM.iv);TM.total=total;TM.pen=0;TM.on=false;TM.last=-1;TM.end=null;document.body.classList.remove('tense');tmDraw(total)}
+function tmRem(){return TM.total-(performance.now()-TM.t0)/1000-TM.pen}
+function tmUsed(){return clamp((performance.now()-TM.t0)/1000+TM.pen,0,TM.total)}
+function tmStop(){clearInterval(TM.iv);TM.on=false;document.body.classList.remove('tense')}
+function tmStart(end){TM.t0=performance.now();TM.pen=0;TM.end=end;TM.on=true;TM.last=-1;clearInterval(TM.iv);TM.iv=setInterval(tmTick,100);tmTick()}
+function tmTick(){if(!TM.on)return;const r=tmRem();if(r<=0){tmDraw(0);const e=TM.end;tmStop();if(e)e();return}
+tmDraw(r);if(r<=5){const c=Math.ceil(r);if(c!==TM.last){TM.last=c;sfx.tick();vib(25)}}}
+function tmPenalty(s){TM.pen+=s;const p=$('tp');p.textContent='−'+s+'s';p.classList.remove('show');void p.offsetWidth;p.classList.add('show');tmTick()}
+
+/* navegação */
+const bn=l=>`<small>${l<4?'FASE '+l:'DESAFIO FINAL'} · ${LV[l].tr.toUpperCase()}</small><b>${LV[l].head}</b><span>${LV[l].q}${LV[l].tip?' <b style="font-size:inherit;letter-spacing:0;color:var(--tx)">'+LV[l].tip+'</b>':''}</span>`;
+function show(id,l){document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$(id).classList.add('on');document.body.dataset.l=l||0;
+const hide=id==='s-start'||id==='s-final';$('steps').style.display=hide?'none':'flex';
+$('tmr').hidden=!(id==='s-p1'||id==='s-p2'||id==='s-p3');
+if($('tmr').hidden)document.body.classList.remove('tense');
+$('steps').innerHTML=[1,2,3,4].map(i=>{const d=S.ses[i]&&S.lv!==i;return`<div class="step ${S.lv===i?'on':''} ${d?'done':''}">${d?'✓ ':i+' · '}${SHORT[i-1]}</div>`}).join('');scrollTo(0,0)}
+function home(){S.lv=0;S.ses={};R={};tmStop();const n=[1,2,3,4].filter(i=>S.done[i]).length;
+$('phases').innerHTML=[1,2,3,4].map(i=>`<div class="ph" style="--c:${COL[i]}"><span class="pi">${LV[i].ico}</span><div><b>${LV[i].n}</b><small>${LV[i].d} · ${LV[i].tr} · ⏱️ ${LV[i].time}s</small></div>${S.done[i]?'<span class="ck">✓</span>':''}</div>`).join('')+(n?`<p class="mu sm" style="margin-bottom:6px">${n} de 4 fases já concluídas neste aparelho.</p>`:'');show('s-start')}
+function intro(l){S.lv=l;G.n++;tmStop();const v=LV[l];
+$('s-intro').innerHTML=`<div class="card"><span class="tag">${l<4?'Nível '+l:'Desafio final'} · ${v.d}</span><div class="head">${v.ico} ${v.head}:</div><p class="quote">«${v.q}»</p>
+<div class="info"><div><small>⏱️ Limite de tempo</small><b>${v.time}s</b></div><div><small>🎯 Objetivo</small><b>${v.goal}</b></div></div>
+<p class="note">⏱️ ${v.note}</p><ul class="how">${v.how.map(h=>`<li>${h}</li>`).join('')}</ul><button class="btn" onclick="play(${l})">Começar fase</button></div>`;show('s-intro',l)}
+function play(l){S.lv=l;G.n++;({1:start1,2:start2,3:()=>startGrid(3),4:()=>startGrid(4)})[l]()}
+const rate=p=>p>=85?['EXCELENTE','#3ddc97']:p>=70?['MUITO BOM','#5b8cff']:p>=50?['BOM','#ffc857']:['TENTE NOVAMENTE','#ff6b7a'];
+function result(l,to,msg,st,extra,r){S.ses[l]=1;R[l]=r;S.best[l]=Math.max(S.best[l]||0,r.perf);S.done[l]=1;S.xp+=5+Math.round(r.perf/10);save();
+if(to)sfx.bad();else sfx.win();const rt=rate(r.perf);
+$('s-result').innerHTML=`<div class="card ctr"><div class="big">${to?'⏱':'✓'}</div><h2>${to?'Tempo esgotado':'Fase '+l+' concluída'}</h2><p class="mu">${msg}</p>
+<div class="rate" style="color:${rt[1]}">${rt[0]}</div>
+<div class="stats">${st.map(s=>`<div class="stat"><small>${s[0]}</small><b>${s[1]}</b></div>`).join('')}</div>${extra||''}
+<div class="row"><button class="btn ghost" onclick="play(${l})">Repetir fase</button><button class="btn" onclick="${l<4?`intro(${l+1})`:'final()'}">${l<4?'Próxima fase':'Ver resultado final'}</button></div></div>`;show('s-result',l)}
+
+/* ===== FASE 1 · Interferência ===== */
+const COLS=[['Vermelho','#ff4d5e'],['Azul','#4d8dff'],['Verde','#2fd27f'],['Amarelo','#ffd23f']];
+let L1;
+function start1(){L1={ok:0,err:0,tot:0,score:0,rts:[],cur:0,lock:true,t:0,pw:-1,pc:-1,hist:[],used:0};
+$('rb1').innerHTML=bn(1);
+$('ans1').innerHTML=COLS.map((c,i)=>`<button onclick="ans1(${i})"><i class="sw" style="background:${c[1]}"></i>${c[0]}</button>`).join('');
+upd1();tmReset(LV[1].time);show('s-p1',1);next1();tmStart(()=>end1(true))}
+/* sorteia (palavra, cor) sem combinar, sem repetir palavra/cor da rodada anterior e sem repetir pares recentes */
+function pair1(){let all=[];for(let w=0;w<4;w++)for(let c=0;c<4;c++)if(w!==c&&w!==L1.pw&&c!==L1.pc)all.push([w,c]);
+const fresh=all.filter(p=>!L1.hist.includes(p[0]*4+p[1]));if(fresh.length)all=fresh;
+if(Math.random()<.75){const soft=all.filter(p=>p[1]!==L1.pw&&p[0]!==L1.pc);if(soft.length)all=soft}
+const p=pick(all);L1.hist.push(p[0]*4+p[1]);if(L1.hist.length>3)L1.hist.shift();return p}
+function next1(){const[w,c]=pair1();L1.pw=w;L1.pc=c;L1.cur=c;
+const e=$('word');e.className='word pop';e.textContent=COLS[w][0].toUpperCase();e.style.color=COLS[c][1];
+[...$('ans1').children].forEach(b=>b.className='');
+$('fb1').className='fb';$('fb1').textContent='';L1.t=performance.now();L1.lock=false}
+function ans1(i){if(L1.lock||!TM.on)return;L1.lock=true;const rt=(performance.now()-L1.t)/1000,e=$('word'),f=$('fb1'),bs=$('ans1').children;L1.tot++;L1.rts.push(rt);
+if(i===L1.cur){const p=Math.max(5,Math.round(15-rt*4));L1.score+=p;L1.ok++;e.classList.add('ok');bs[i].className='good';f.textContent=`+${p}`;f.className='fb ok';sfx.ok()}
+else{L1.err++;L1.score=Math.max(0,L1.score-5);e.classList.add('bad');bs[i].className='bad';bs[L1.cur].className='good';f.textContent='Era '+COLS[L1.cur][0];f.className='fb bad';sfx.bad();vib(40)}
+upd1();if(L1.ok>=20){L1.used=tmUsed();tmStop();return later(()=>end1(false),350)}
+later(next1,i===L1.cur?110:260)}
+function upd1(){$('sc1').textContent=L1.score;$('pg1').textContent=L1.ok+'/20';$('er1').textContent=L1.err;$('br1').style.width=L1.ok*5+'%'}
+function end1(to){L1.lock=true;tmStop();G.n++;const used=to?TM.total:L1.used;
+const acc=L1.tot?L1.ok/L1.tot:0,avg=L1.rts.length?L1.rts.reduce((a,b)=>a+b)/L1.rts.length:3,spd=clamp((3-avg)/2,0,1);
+const perf=Math.round(100*(.5*L1.ok/20+.3*acc+.2*spd));
+result(1,to,to?`Você acertou ${L1.ok} de 20 antes do tempo acabar.`:'Você acertou as 20 cores ignorando as palavras.',
+[['Tempo',used.toFixed(0)+'s'],['Acertos',L1.ok+'/20'],['Erros',L1.err],['Pontos',L1.score],['Tempo médio',avg.toFixed(1)+'s'],['Desempenho',perf+'%']],'',
+{time:used,hits:L1.ok,errs:L1.err,moves:L1.tot,perf})}
+
+/* ===== FASE 2 · Labirinto Neural (4×4) ===== */
+const EM=[['🔮','#7c5cff'],['🌀','#2bb7ff'],['⚡','#ffc857'],['🔥','#ff6b4a'],['🍀','#3ddc97'],['🦋','#ff7ac6'],['🌙','#8fa3ff'],['💎','#2bd4e6']];
+let L2,T2;
+function setSt(t,c){const m=$('st2');m.textContent=t;m.className='fb '+(c||'')}
+function upd2(){$('pr2').textContent=L2.fd+'/8';$('mv2').textContent=L2.mv;$('er2').textContent=L2.err;$('rc2').textContent=S.rec2||'-'}
+function start2(){clearInterval(T2);L2={mv:0,fd:0,err:0,sel:[],lock:true,hint:1,live:false,done:false,used:0};
+$('rb2').innerHTML=bn(2);
+const d=shuffle([...EM,...EM]);
+$('board').innerHTML=d.map((e,i)=>`<button class="mc up" data-v="${e[0]}" aria-label="Carta ${i+1}" style="--k:${e[1]}" onclick="flip(this)"><span class="in"><span class="face front">?</span><span class="face back">${e[0]}</span></span></button>`).join('');
+upd2();$('hb').textContent='💡 Dica (−5s)';$('hb').disabled=false;tmReset(LV[2].time);
+const g=G.n;let n=4;setSt(`Memorize as cartas… ${n}`);
+T2=setInterval(()=>{if(g!==G.n){clearInterval(T2);return}n--;if(n>0)setSt(`Memorize as cartas… ${n}`);
+else{clearInterval(T2);document.querySelectorAll('.mc').forEach(c=>c.classList.remove('up'));setSt('Valendo! Encontre os pares.');L2.lock=false;L2.live=true;tmStart(()=>end2(true))}},1000);
+show('s-p2',2)}
+function flip(c){if(L2.lock||!L2.live||c.classList.contains('up'))return;c.classList.add('up');sfx.flip();L2.sel.push(c);if(L2.sel.length<2)return;
+L2.mv++;L2.lock=true;upd2();const[a,b]=L2.sel;L2.sel=[];
+if(a.dataset.v===b.dataset.v)later(()=>{a.classList.add('found');b.classList.add('found');L2.fd++;sfx.ok();setSt('Par encontrado!','ok');upd2();L2.lock=false;
+if(L2.fd===8){L2.live=false;L2.used=tmUsed();tmStop();later(()=>end2(false),800)}},300);
+else later(()=>{a.classList.remove('up');b.classList.remove('up');L2.err++;upd2();setSt('Não combinam. Guarde a posição.','bad');sfx.bad();L2.lock=false},700)}
+function hint(){if(!L2.live||L2.lock||L2.hint<1)return;const g={};document.querySelectorAll('.mc:not(.found):not(.up)').forEach(c=>(g[c.dataset.v]=g[c.dataset.v]||[]).push(c));
+const p=Object.values(g).find(x=>x.length===2);if(!p)return;L2.hint--;$('hb').textContent='💡 Dica (0)';$('hb').disabled=true;L2.lock=true;p.forEach(c=>c.classList.add('up'));setSt('Esse é um par. Memorize!');tmPenalty(5);
+later(()=>{p.forEach(c=>c.classList.remove('up'));setSt('');L2.lock=false},1400)}
+function end2(to){if(L2.done)return;L2.done=true;L2.live=false;L2.lock=true;tmStop();G.n++;const used=to?TM.total:L2.used,full=L2.fd===8;
+const eff=L2.mv?Math.min(1,L2.fd/L2.mv):0,left=full?clamp(1-used/TM.total,0,1):0;
+const perf=Math.round(L2.fd/8*50+eff*30+left*20),st=!full?0:L2.mv<=12?3:L2.mv<=18?2:1;
+if(full&&(!S.rec2||L2.mv<S.rec2))S.rec2=L2.mv;
+result(2,to,to?`Você achou ${L2.fd} de 8 pares antes do tempo acabar.`:'Todos os pares foram encontrados.',
+[['Tempo',used.toFixed(0)+'s'],['🎯 Jogadas',L2.mv],['Acertos',L2.fd+'/8'],['Erros',L2.err],['Eficiência',Math.round(eff*100)+'%'],['Desempenho',perf+'%']],
+full?`<div class="stars">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div>`:'',
+{time:used,hits:L2.fd,errs:L2.err,moves:L2.mv,perf})}
+
+/* ===== FASES 3 e 4 · formas em SVG ===== */
+const PAL=['#5b8cff','#a07bff','#3ddc97','#ffc857','#ff7ac6','#2bd4e6','#ff6b4a'];
+function pts(n,ro,ri,rot){const a=[],m=ri?n*2:n;for(let i=0;i<m;i++){const r=ri?(i%2?ri:ro):ro,t=(rot+i*360/m)*Math.PI/180;a.push((12+r*Math.cos(t)).toFixed(2)+','+(12+r*Math.sin(t)).toFixed(2))}return a.join(' ')}
+const P=(n,ro,ri,rot)=>`<polygon points="${pts(n,ro,ri,rot)}"/>`;
+const W=(m,r)=>r?`<g transform="rotate(${r} 12 12)">${m}</g>`:m;
+const PLUS='<path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/>';
+const ARROW='<path d="M12 1.5 21.5 12H15.5V22.5H8.5V12H2.5z"/>';
+const CC=(()=>{const g=36*Math.PI/180,x1=12+8*Math.cos(g),y1=12+8*Math.sin(g),x2=12+8*Math.cos(-g),y2=12+8*Math.sin(-g);
+return `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)}A8 8 0 1 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" fill="none" stroke="currentColor" stroke-width="4.2"/>`})();
+const TRI=P(3,11,0,-90),S5=P(5,11,5,-90),S4=P(4,11,4.3,-90),S6=P(6,11,5.5,-90),S5F=P(5,11,8,-90),S5T=P(5,11,4.2,-90),H6=P(6,11,0,-90),H6B=P(6,11,0,-60),G5=P(5,11,0,-90);
+const F=(a,ra,b,rb)=>({a:W(a,ra),b:W(b,rb)});
+/* pares de formas muito parecidas, por nível de dificuldade */
+const FAM=[
+ [F(TRI,0,TRI,180),F(S5,0,S4,0),F(PLUS,0,PLUS,45)],
+ [F(S5,0,S6,0),F(G5,0,H6,0),F(CC,0,CC,90),F(ARROW,0,ARROW,28)],
+ [F(S5F,0,S5T,0),F(ARROW,0,ARROW,14),F(CC,0,CC,45),F(H6,0,H6B,0),F(PLUS,0,PLUS,12),F(S5,0,S5,36)]];
+const SHP=['<circle cx="12" cy="12" r="10"/>','<rect x="3" y="3" width="18" height="18" rx="2"/>',TRI,P(4,11,0,-90),S5,PLUS,H6,G5,ARROW];
+const GR={3:{rows:[6,6,7,8,8,9],tier:[0,0,1,1,2,2],pen:2,rounds:6},4:{dim:[[5,6],[5,6],[5,6],[6,6],[6,6]],k:[5,5,5,6,6],pen:2,rounds:5}};
+const cols3=()=>{const w=innerWidth;return w>=520?8:w>=360?6:5};
+let L3;
+function sizes(total,lo,hi){const a=[];let left=total;
+while(left>0){if(left<lo*2||left<=hi){if(left>=lo)a.push(left);else a[a.length-1]+=left;break}
+let s=lo+rnd(hi-lo+1);if(left-s<lo)s=left-lo;a.push(s);left-=s}return a}
+function genOdd(N,tier){let f,k;do{k=rnd(FAM[tier].length)}while(k===L3.fam&&FAM[tier].length>1);L3.fam=k;f=FAM[tier][k];
+const sw=Math.random()<.5,base=sw?f.b:f.a,odd=sw?f.a:f.b,cells=[];
+for(let i=0;i<N;i++)cells.push({m:base,c:pick(PAL),t:0});cells[rnd(N)]={m:odd,c:pick(PAL),t:1};return cells}
+/* repetição é só pela FORMA: k formas repetidas em quantidades parecidas + 1 forma única; a cor é aleatória e não conta */
+const SIM=[[7,6],[1,3],[0,6],[0,1],[2,8]];
+function genOnce(N,r){const k=GR[4].k[r];let u,keep=[];
+if(r>=2){const p=pick(SIM),sw=Math.random()<.5;u=sw?p[0]:p[1];keep=[sw?p[1]:p[0]]}else u=rnd(SHP.length);
+const rest=shuffle(SHP.map((_,i)=>i).filter(i=>i!==u&&!keep.includes(i))),forms=keep.concat(rest).slice(0,k);
+const base=Math.floor((N-1)/k),extra=(N-1)%k,cells=[{m:SHP[u],c:pick(PAL),t:1}];
+shuffle(forms).forEach((f,i)=>{const n=base+(i<extra?1:0);for(let j=0;j<n;j++)cells.push({m:SHP[f],c:pick(PAL),t:0})});
+return shuffle(cells)}
+function startGrid(l){L3={l,r:0,hits:0,errs:0,taps:0,lock:true,fam:-1,used:0};$('rb3').innerHTML=bn(l);
+$('g3').onclick=e=>{const b=e.target.closest('.cell');if(b)tap3(b)};
+tmReset(LV[l].time);show('s-p3',l);round3();tmStart(()=>endGrid(true))}
+function round3(){const l=L3.l,r=L3.r;let c,rows;
+if(l===3){c=cols3();rows=GR[3].rows[r]+(c===5?2:0)}else{const[cc,rr]=GR[4].dim[r];c=innerWidth<360?5:cc;rows=Math.ceil(cc*rr/c)}
+const N=c*rows,cells=l===3?genOdd(N,GR[3].tier[r]):genOnce(N,r);
+const g=$('g3');g.style.gridTemplateColumns=`repeat(${c},1fr)`;g.style.maxWidth=l===4?'440px':'';g.style.margin=l===4?'10px auto 4px':'';
+g.innerHTML=cells.map(x=>`<button class="cell" style="color:${x.c}" data-t="${x.t}" aria-label="Elemento"><svg viewBox="0 0 24 24" aria-hidden="true">${x.m}</svg></button>`).join('');
+$('rd3').textContent=(r+1)+'/'+GR[l].rounds;$('er3').textContent=L3.errs;$('br3').style.width=r*100/GR[l].rounds+'%';
+$('fb3').textContent='';$('fb3').className='fb';L3.lock=false}
+function tap3(b){if(!TM.on||L3.lock||b.disabled)return;L3.taps++;const l=L3.l,f=$('fb3');
+if(b.dataset.t==='1'){L3.lock=true;L3.hits++;L3.r++;b.classList.add('yes');sfx.ok();f.textContent='Certo!';f.className='fb ok';$('br3').style.width=L3.r*100/GR[l].rounds+'%';
+if(L3.r>=GR[l].rounds){L3.used=tmUsed();tmStop();later(()=>endGrid(false),420)}else later(round3,280)}
+else{b.disabled=true;b.classList.add('no');L3.errs++;$('er3').textContent=L3.errs;sfx.bad();vib(40);f.textContent=`Esse não · −${GR[l].pen}s`;f.className='fb bad';tmPenalty(GR[l].pen)}}
+function endGrid(to){const l=L3.l,tot=GR[l].rounds;L3.lock=true;tmStop();G.n++;const used=to?TM.total:L3.used;
+const acc=L3.taps?L3.hits/L3.taps:0,left=to?0:clamp(1-used/TM.total,0,1),perf=Math.round(L3.hits/tot*60+acc*25+left*15);
+result(l,to,to?`Você resolveu ${L3.hits} de ${tot} rodadas antes do tempo acabar.`:`Você resolveu as ${tot} rodadas.`,
+[['Tempo',used.toFixed(0)+'s'],['Acertos',L3.hits+'/'+tot],['Erros',L3.errs],['Cliques',L3.taps],['Desempenho',perf+'%']],'',
+{time:used,hits:L3.hits,errs:L3.errs,moves:L3.taps,perf})}
+
+/* ===== RESULTADO FINAL ===== */
+function final(){S.lv=0;G.n++;tmStop();const ks=Object.keys(TERMS),k=pick(ks),rs=[1,2,3,4].map(i=>R[i]||{time:0,hits:0,errs:0,moves:0,perf:0});
+const sum=f=>rs.reduce((a,r)=>a+r[f],0),perf=Math.round(sum('perf')/4),rt=rate(perf),tt=Math.round(sum('time'));
+if(perf>=70&&!S.ach.includes('Mestre da Cognição'))S.ach.push('Mestre da Cognição');save();
+const msg=(p,a,b,c)=>p>=80?a:p>=55?b:c;
+const ins=[msg(rs[0].perf,'Ótimo controle inibitório e velocidade de resposta.','Bom controle inibitório; os erros caem com prática.','Para treinar: atenção sob pressão. Responda pela COR, sem ler a palavra.'),
+msg(rs[1].perf,'Ótima memória de trabalho e espacial.','Memória espacial na média. Associe cada símbolo à sua posição.','Para treinar: memória espacial. Divida a grade em quadrantes e memorize um por vez.'),
+msg(rs[2].perf,'Percepção visual aguçada para detalhes.','Boa percepção de detalhes. Compare as formas com calma.','Para treinar: varra a grade em ordem, linha por linha, olhando o formato.'),
+msg(rs[3].perf,'Excelente busca visual em meio à confusão.','Boa busca visual. Agrupe mentalmente o que se repete.','Para treinar: ignore a cor e conte as formas parecidas por grupos.')];
+const names=['Interferência','Labirinto','Percepção','Desafio final'];
+$('s-final').innerHTML=`<div class="card ctr"><div class="big" style="font-size:2rem">🏆</div><h1 style="margin-top:12px">DESAFIO CONCLUÍDO</h1>
+<div class="rate" style="color:${rt[1]}">${rt[0]}</div><p class="mu">Resultado final: <b style="color:var(--tx)">${perf}%</b></p>
+<div class="stats"><div class="stat"><small>Tempo total</small><b>${tt}s</b></div><div class="stat"><small>Acertos</small><b>${sum('hits')}</b></div><div class="stat"><small>Erros</small><b>${sum('errs')}</b></div><div class="stat"><small>Jogadas</small><b>${sum('moves')}</b></div><div class="stat"><small>Desempenho</small><b>${perf}%</b></div></div>
+${rs.map((r,i)=>`<div class="pr"><span>${names[i]}</span><div class="bar"><i style="width:${r.perf}%;background:${COL[i+1]}"></i></div><b>${r.perf}%</b></div>`).join('')}
+<div class="term"><small>Palavra da jornada</small><b>${k}</b><span class="sm">${TERMS[k]}</span></div>
+<ul class="ins">${ins.map(i=>`<li>${i}</li>`).join('')}</ul>
+${perf>=70?'<p class="sm">Conquista: <b>Mestre da Cognição</b></p>':''}<div class="bar" style="margin:8px 0"><i style="width:${S.xp%100}%"></i></div><p class="mu sm">XP ${S.xp%100}/100 para o próximo nível</p>
+<div class="row"><button class="btn ghost" onclick="share(${perf},${tt})">Compartilhar</button><button class="btn" onclick="S.ses={};R={};intro(1)">Jogar novamente</button></div></div>`;
+show('s-final',5);sfx.win()}
+function share(p,t){const x=`Terminei o Desafio Mental! Resultado: ${rate(p)[0]} (${p}%) em ${t}s. Interferência ${R[1]?R[1].perf:0}%, Memória ${R[2]?R[2].perf:0}%, Percepção ${R[3]?R[3].perf:0}%, Final ${R[4]?R[4].perf:0}%.`;
+if(navigator.share)navigator.share({title:'Desafio Mental',text:x}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(x).then(()=>alert('Resultado copiado!'));else alert(x)}
+
+load();home();
+</script>
+</body>
+</html>

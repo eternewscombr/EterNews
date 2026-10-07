@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    
+    
+    
+      <!-- font-awesome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+      <!-- Page Icon -->
+      <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+      <link rel="stylesheet" href="style.css">
+
+
+      
+<!-- Favicon para modo claro (ícone escuro) -->
+<link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)" />
+
+<!-- Favicon para modo escuro (ícone claro) -->
+<link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)" />
+
+<meta name="theme-color" content=" #000000"> <title>Eter News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .school-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .option:hover {
+            background-color: #f3f4f6;
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen font-sans">
+        <!-- Botão de seta para voltar à página anterior -->
+        <button onclick="window.history.back()" style="position: fixed; top: 20px; left: 20px; background: none; border: none; cursor: pointer; font-size: 2rem; z-index: 1000; color: white;">
+            &#8592;
+        </button>
+    <!-- Header -->
+    <header class="bg-black py-6 shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-graduation-cap mr-2"></i>Quiz Educacional
+                </h1>
+              
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <section id="welcome-section" class="text-center mb-12 fade-in">
+            <h2 class="text-4xl font-bold mb-4">Teste Seus Conhecimentos</h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
+                Escolha uma área do conhecimento e responda às perguntas para avaliar seu desempenho. 
+                Ao final, você receberá um feedback com sua pontuação.
+            </p>
+            <div class="flex justify-center">
+                <button id="start-btn" class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-8 rounded-full text-lg transition transform hover:scale-105">
+                    Começar Quiz <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- School Selection Section -->
+        <section id="school-selection" class="hidden mb-12 fade-in">
+            <h2 class="text-3xl font-bold mb-8 text-center">Escolha sua Área de Conhecimento</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Math Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="math">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-square-root-alt text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Matemática</h3>
+                    </div>
+                    <p class="text-gray-400">Teste seus conhecimentos em álgebra, geometria e cálculo.</p>
+                </div>
+
+                <!-- Portuguese Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="portuguese">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-book text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Português</h3>
+                    </div>
+                    <p class="text-gray-400">Avalie sua gramática, interpretação de texto e literatura.</p>
+                </div>
+
+                <!-- Science Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="science">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-flask text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Ciências</h3>
+                    </div>
+                    <p class="text-gray-400">Conhecimentos em física, química e biologia.</p>
+                </div>
+
+                <!-- History Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="history">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-landmark text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">História</h3>
+                    </div>
+                    <p class="text-gray-400">Do Brasil e mundial, desde a antiguidade até os dias atuais.</p>
+                </div>
+
+                <!-- Geography Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="geography">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-globe-americas text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Geografia</h3>
+                    </div>
+                    <p class="text-gray-400">Conhecimentos sobre relevo, clima, população e economia.</p>
+                </div>
+
+                <!-- English Card -->
+                <div class="school-card bg-gray-900 rounded-xl p-6 cursor-pointer transition duration-300" data-school="english">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-language text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Inglês</h3>
+                    </div>
+                    <p class="text-gray-400">Gramática, vocabulário e compreensão do idioma inglês.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="hidden max-w-3xl mx-auto fade-in">
+            <div class="bg-gray-900 rounded-xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="quiz-title" class="text-2xl font-bold">Quiz de Matemática</h2>
+                    <div class="text-gray-400">
+                        <span id="current-question">1</span>/<span id="total-questions">10</span>
+                    </div>
+                </div>
+                
+                <div class="w-full bg-gray-800 rounded-full h-2.5 mb-6">
+                    <div id="progress-bar" class="bg-white h-2.5 rounded-full progress-bar" style="width: 0%"></div>
+                </div>
+                
+                <h3 id="question-text" class="text-xl mb-6">Qual é a fórmula para calcular a área de um círculo?</h3>
+                
+                <div id="options-container" class="space-y-3">
+                    <!-- Options will be inserted here by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="flex justify-between">
+                <button id="back-btn" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Voltar
+                </button>
+                <button id="next-btn" class="bg-white hover:bg-gray-200 text-black font-bold px-6 py-3 rounded-lg transition ml-auto">
+                    Próxima <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden max-w-2xl mx-auto text-center fade-in">
+            <div class="bg-gray-900 rounded-xl p-8 mb-6">
+                <h2 class="text-3xl font-bold mb-6">Resultado do Quiz</h2>
+                
+                <div id="result-emoji" class="text-6xl mb-6">😄</div>
+                
+                <h3 id="result-title" class="text-2xl font-bold mb-2">Muito Bom!</h3>
+                <p id="result-description" class="text-gray-400 mb-6">Você acertou <span id="correct-answers" class="font-bold text-white">9</span> de <span id="total-answers" class="font-bold text-white">10</span> perguntas!</p>
+                
+                <div class="w-full bg-gray-800 rounded-full h-4 mb-6">
+                    <div id="result-bar" class="bg-green-500 h-4 rounded-full progress-bar" style="width: 90%"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400">Tempo médio por pergunta</p>
+                        <p id="average-time" class="text-xl font-bold">12s</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400">Porcentagem de acerto</p>
+                        <p id="percentage" class="text-xl font-bold">90%</p>
+                    </div>
+                </div>
+                
+                <button id="restart-btn" class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-8 rounded-full text-lg transition transform hover:scale-105 mr-4">
+                    <i class="fas fa-redo mr-2"></i> Refazer Quiz
+                </button>
+                <button id="new-quiz-btn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full text-lg transition transform hover:scale-105">
+                    <i class="fas fa-book mr-2"></i> Novo Quiz
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    
+
+    <script>
+
+// Função para embaralhar um array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+// Função para selecionar perguntas aleatórias
+function getRandomQuestions(questions, numQuestions) {
+    shuffleArray(questions);
+    return questions.slice(0, numQuestions);
+}
+
+// Quiz data for each subject
+const quizData = {
+    math: [
+        {
+            question: "Qual é a fórmula para calcular a área de um círculo?",
+            options: ["πr²", "2πr", "πd", "4/3πr³"],
+            answer: "πr²"
+        },
+        {
+            question: "Qual é o valor de x na equação 2x + 5 = 15?",
+            options: ["5", "10", "7.5", "20"],
+            answer: "5"
+        },
+        {
+            question: "Qual é o próximo número na sequência: 2, 4, 8, 16, ___?",
+            options: ["20", "24", "32", "64"],
+            answer: "32"
+        },
+        {
+            question: "Qual é a raiz quadrada de 144?",
+            options: ["11", "12", "13", "14"],
+            answer: "12"
+        },
+        {
+            question: "Quantos graus tem a soma dos ângulos internos de um triângulo?",
+            options: ["90°", "180°", "270°", "360°"],
+            answer: "180°"
+        },
+        {
+            question: "Qual é a fórmula da soma dos ângulos internos de um polígono?",
+            options: ["(n-2) × 180°", "n × 180°", "n × 360°", "(n+2) × 180°"],
+            answer: "(n-2) × 180°"
+        },
+        {
+            question: "Qual é o valor de π (pi) aproximadamente?",
+            options: ["3.14", "3.16", "3.12", "3.18"],
+            answer: "3.14"
+        },
+        {
+            question: "Qual é a equação da reta em sua forma geral?",
+            options: ["y = mx + b", "Ax + By + C = 0", "y = ax² + bx + c", "x² + y² = r²"],
+            answer: "Ax + By + C = 0"
+        }
+    ],
+    portuguese: [
+        {
+            question: "Qual destas palavras é um advérbio?",
+            options: ["Casa", "Rapidamente", "Bonito", "Correr"],
+            answer: "Rapidamente"
+        },
+        {
+            question: "Qual é o plural de 'cidadão'?",
+            options: ["Cidadãos", "Cidadães", "Cidadões", "Cidadãos ou cidadões"],
+            answer: "Cidadãos"
+        },
+        {
+            question: "Qual destes é um exemplo de figura de linguagem?",
+            options: ["Metáfora", "Substantivo", "Verbo", "Artigo"],
+            answer: "Metáfora"
+        },
+        {
+            question: "Quem escreveu 'Dom Casmurro'?",
+            options: ["Machado de Assis", "Carlos Drummond de Andrade", "Clarice Lispector", "Jorge Amado"],
+            answer: "Machado de Assis"
+        },
+        {
+            question: "Qual destas palavras está escrita corretamente?",
+            options: ["Exceção", "Excessão", "Exseção", "Ecsessão"],
+            answer: "Exceção"
+        },
+        {
+            question: "Qual é a função do pronome na frase?",
+            options: ["Substituir um substantivo", "Descrever um verbo", "Modificar um adjetivo", "Indicar uma preposição"],
+            answer: "Substituir um substantivo"
+        },
+        {
+            question: "Qual é o tempo verbal da frase: 'Eu comi'?",
+            options: ["Presente", "Pretérito", "Futuro", "Imperativo"],
+            answer: "Pretérito"
+        },
+        {
+            question: "Qual é a forma correta do verbo na frase: 'Ele _____ ao cinema ontem.'?",
+            options: ["vai", "foi", "irá", "ir"],
+            answer: "foi"
+        }
+    ],
+    science: [
+        {
+            question: "Qual é o elemento químico com símbolo 'O'?",
+            options: ["Ouro", "Ósmio", "Oxigênio", "Óxido"],
+            answer: "Oxigênio"
+        },
+        {
+            question: "Qual destes é um órgão do sistema digestivo?",
+            options: ["Cérebro", "Pulmão", "Fígado", "Coração"],
+            answer: "Fígado"
+        },
+        {
+            question: "Qual é a unidade básica da vida?",
+            options: ["Átomo", "Molécula", "Célula", "Tecido"],
+            answer: "Célula"
+        },
+        {
+            question: "Qual destes é um gás nobre?",
+            options: ["Hidrogênio", "Oxigênio", "Hélio", "Cloro"],
+            answer: "Hélio"
+        },
+        {
+            question: "Qual é a força que atrai objetos para o centro da Terra?",
+            options: ["Magnetismo", "Gravidade", "Eletricidade", "Atrito"],
+            answer: "Gravidade"
+        },
+        {
+            question: "Qual é a principal fonte de energia para a Terra?",
+            options: ["O Sol", "O vento", "A água", "O carvão"],
+            answer: "O Sol"
+        },
+        {
+            question: "Qual é a fórmula da água?",
+            options: ["H2O", "CO2", "O2", "NaCl"],
+            answer: "H2O"
+        },
+        {
+            question: "Qual é o processo pelo qual as plantas produzem seu alimento?",
+            options: ["Respiração", "Fotossíntese", "Fermentação", "Digestão"],
+            answer: "Fotossíntese"
+        }
+    ],
+    history: [
+        {
+            question: "Em que ano o Brasil foi descoberto?",
+            options: ["1492", "1500", "1502", "1498"],
+            answer: "1500"
+        },
+        {
+            question: "Quem foi o primeiro presidente do Brasil?",
+            options: ["Dom Pedro II", "Deodoro da Fonseca", "Prudente de Morais", "Floriano Peixoto"],
+            answer: "Deodoro da Fonseca"
+        },
+        {
+            question: "Qual foi o período da ditadura militar no Brasil?",
+            options: ["1930-1945", "1954-1964", "1964-1985", "1985-1990"],
+            answer: "1964-1985"
+        },
+        {
+            question: "Onde ocorreu a primeira capital do Brasil?",
+            options: ["Rio de Janeiro", "São Paulo", "Salvador", "Brasília"],
+            answer: "Salvador"
+        },
+        {
+            question: "Qual foi o principal produto econômico do Brasil no período colonial?",
+            options: ["Café", "Açúcar", "Ouro", "Borracha"],
+            answer: "Açúcar"
+        },
+        {
+            question: "Quem foi o responsável pela independência do Brasil?",
+            options: ["Dom Pedro I", "Getúlio Vargas", "Joaquim Nabuco", "Tiradentes"],
+            answer: "Dom Pedro I"
+        },
+        {
+            question: "Qual foi a primeira capital do Brasil?",
+            options: ["Rio de Janeiro", "Salvador", "Brasília", "São Paulo"],
+            answer: "Salvador"
+        },
+        {
+            question: "Qual foi a guerra que ocorreu entre Brasil e Paraguai?",
+            options: ["Guerra do Paraguai", "Guerra de Canudos", "Guerra dos Farrapos", "Guerra do Contestado"],
+            answer: "Guerra do Paraguai"
+        }
+    ],
+    geography: [
+        {
+            question: "Qual é o maior país do mundo em área territorial?",
+            options: ["China", "Estados Unidos", "Rússia", "Canadá"],
+            answer: "Rússia"
+        },
+        {
+            question: "Qual é o rio mais longo do mundo?",
+            options: ["Amazonas", "Nilo", "Yangtzé", "Mississipi"],
+            answer: "Nilo"
+        },
+        {
+            question: "Qual destes países não faz parte da União Europeia?",
+            options: ["França", "Alemanha", "Suíça", "Itália"],
+            answer: "Suíça"
+        },
+        {
+            question: "Qual é o ponto mais alto do Brasil?",
+            options: ["Pico da Neblina", "Pico da Bandeira", "Morro da Igreja", "Pico Paraná"],
+            answer: "Pico da Neblina"
+        },
+        {
+            question: "Qual é o clima predominante no sertão nordestino?",
+            options: ["Tropical úmido", "Semiárido", "Equatorial", "Subtropical"],
+            answer: "Semiárido"
+        },
+        {
+            question: "Qual é a capital da França?",
+            options: ["Paris", "Londres", "Berlim", "Madri"],
+            answer: "Paris"
+        },
+        {
+            question: "Qual é o continente mais populoso?",
+            options: ["África", "Ásia", "Europa", "América"],
+            answer: "Ásia"
+        },
+        {
+            question: "Qual é a maior floresta tropical do mundo?",
+            options: ["Floresta Amazônica", "Floresta do Congo", "Floresta Boreal", "Floresta de Taiga"],
+            answer: "Floresta Amazônica"
+        }
+    ],
+    english: [
+        {
+            question: "What is the past tense of 'go'?",
+            options: ["Goed", "Went", "Gone", "Going"],
+            answer: "Went"
+        },
+        {
+            question: "What is the plural of 'child'?",
+            options: ["Childs", "Children", "Childes", "Childer"],
+            answer: "Children"
+        },
+        {
+            question: "Which of these is a synonym for 'happy'?",
+            options: ["Sad", "Joyful", "Angry", "Bored"],
+            answer: "Joyful"
+        },
+        {
+            question: "What is the opposite of 'hot'?",
+            options: ["Cold", "Warm", "Cool", "Chilly"],
+            answer: "Cold"
+        },
+        {
+            question: "Which word is a verb?",
+            options: ["Quick", "Run", "Beautiful", "Happiness"],
+            answer: "Run"
+        },
+        {
+            question: "What is the correct form of the verb in the sentence: 'She _____ to the store yesterday.'?",
+            options: ["go", "went", "gone", "going"],
+            answer: "went"
+        },
+        {
+            question: "What is the past participle of 'see'?",
+            options: ["Saw", "Seen", "Sighting", "Sees"],
+            answer: "Seen"
+        },
+        {
+            question: "Which of these sentences is correct?",
+            options: ["He go to school.", "He goes to school.", "He going to school.", "He gone to school."],
+            answer: "He goes to school."
+        }
+    ]
+};
+
+// Variáveis globais
+let currentQuestionIndex = 0;
+let currentScore = 0;
+let selectedSubject = '';
+let totalQuestions = 0;
+let selectedQuestions = [];
+
+// Início do quiz
+document.getElementById('start-btn').addEventListener('click', function() {
+    document.getElementById('welcome-section').classList.add('hidden');
+    document.getElementById('school-selection').classList.remove('hidden');
+});
+
+// Seleção da área de conhecimento
+document.querySelectorAll('.school-card').forEach(card => {
+    card.addEventListener('click', function() {
+        selectedSubject = this.getAttribute('data-school');
+        selectedQuestions = getRandomQuestions(quizData[selectedSubject], 5); // Seleciona 5 perguntas aleatórias
+        totalQuestions = selectedQuestions.length;
+        currentQuestionIndex = 0;
+        currentScore = 0;
+        document.getElementById('school-selection').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        loadQuestion();
+    });
+});
+
+// Carregar pergunta
+function loadQuestion() {
+    const currentQuestion = selectedQuestions[currentQuestionIndex];
+    document.getElementById('quiz-title').innerText = `Quiz de ${selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1)}`;
+    document.getElementById('question-text').innerText = currentQuestion.question;
+    document.getElementById('current-question').innerText = currentQuestionIndex + 1;
+    document.getElementById('total-questions').innerText = totalQuestions;
+
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+    currentQuestion.options.forEach(option => {
+        const button = document.createElement('button');
+        button.innerText = option;
+        button.className = 'option bg-gray-800 text-white w-full py-2 rounded-lg';
+        button.addEventListener('click', () => selectOption(option));
+        optionsContainer.appendChild(button);
+    });
+
+    document.getElementById('progress-bar').style.width = `${(currentQuestionIndex / totalQuestions) * 100}%`;
+}
+
+// Selecionar opção
+function selectOption(selectedOption) {
+    const currentQuestion = selectedQuestions[currentQuestionIndex];
+    if (selectedOption === currentQuestion.answer) {
+        currentScore++;
+    }
+    if (currentQuestionIndex < totalQuestions - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+// Mostrar resultados
+
+// Mostrar resultados
+function showResults() {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('results-section').classList.remove('hidden');
+    document.getElementById('correct-answers').innerText = currentScore;
+    document.getElementById('total-answers').innerText = totalQuestions;
+    const percentage = (currentScore / totalQuestions) * 100;
+    document.getElementById('percentage').innerText = `${percentage.toFixed(0)}%`;
+    document.getElementById('result-bar').style.width = `${percentage}%`;
+
+    let resultTitle = '';
+    let resultImgSrc = '';
+    if (percentage >= 90) {
+        resultTitle = 'Excelente!';
+        resultImgSrc = 'LOGOS/Apaixonei.png';
+    } else if (percentage >= 70) {
+        resultTitle = 'Bom Trabalho!';
+        resultImgSrc = 'LOGOS/Very good.png';
+    } else if (percentage >= 50) {
+        resultTitle = 'Você Pode Melhorar!';
+        resultImgSrc = 'LOGOS/vamos estudar.png';
+    } else {
+        resultTitle = 'Tente Novamente!';
+        resultImgSrc = 'LOGOS/Xingar.png';
+    }
+    document.getElementById('result-title').innerText = resultTitle;
+
+    // Substituir emoji por imagem
+    const resultEmojiElement = document.getElementById('result-emoji');
+    resultEmojiElement.innerHTML = `<img src="${resultImgSrc}" alt="${resultTitle}" style="width: 40px; height: 40px;">`;
+}
+
+
+
+// Reiniciar quiz
+document.getElementById('restart-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('hidden');
+    document.getElementById('school-selection').classList.remove('hidden');
+});
+
+// Novo quiz
+document.getElementById('new-quiz-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('hidden');
+    document.getElementById('welcome-section').classList.remove('hidden');
+});
+
+
+        document.getElementById('new-quiz-btn').addEventListener('click', function() {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('welcome-section').classList.remove('hidden');
+        });
+    </script>
+
+    
+
+
+<Style>
+
+
+    #result-emoji {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#result-emoji img {
+    width: 120px !important;
+    height: 120px !important;
+    object-fit: contain;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+
+</Style>
+</body>
+</html>
+

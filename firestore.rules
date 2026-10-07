@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function me() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function isAdmin() { return signedIn() && exists(/databases/$(db)/documents/admins/$(request.auth.uid)); }
+    function untouched(f) { return !request.resource.data.diff(resource.data).affectedKeys().hasAny(f); }
+
+    // admins/{uid}: só o Console do Firebase (ou Admin SDK) escreve
+    match /admins/{uid} { allow read: if signedIn() && request.auth.uid == uid; allow write: if false; }
+
+    match /users/{uid} {
+      allow read: if signedIn();
+      // criação: sempre como aluno, sem XP e sem verificação
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == 'aluno' && request.resource.data.xp == 0
+        && request.resource.data.verified == false;
+      // o próprio usuário NÃO altera role, verified, xp
+      allow update: if signedIn() && ((request.auth.uid == uid && untouched(['role','verified','xp','answers']))
+        || isAdmin());
+      allow delete: if false;
+    }
+
+    match /groups/{gid} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update, delete: if isAdmin() || (signedIn() && request.auth.uid in resource.data.admins);
+      match /messages/{mid} {
+        allow read: if signedIn();
+        allow create: if signedIn() && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string && request.resource.data.text.size() <= 2000;
+        allow update: if false;
+        allow delete: if isAdmin() || resource.data.senderId == request.auth.uid;
+      }
+    }
+
+    // conversa privada: id = uidMenor_uidMaior ; só os participantes leem/escrevem
+    match /dms/{cid} {
+      allow read, create: if signedIn() && request.auth.uid in (resource == null ? request.resource.data.members : resource.data.members);
+      allow update: if signedIn() && request.auth.uid in resource.data.members;
+      allow delete: if false;
+      match /messages/{mid} {
+        allow read: if signedIn() && request.auth.uid in get(/databases/$(db)/documents/dms/$(cid)).data.members;
+        allow create: if signedIn() && request.resource.data.senderId == request.auth.uid
+          && request.auth.uid in get(/databases/$(db)/documents/dms/$(cid)).data.members;
+        allow delete: if resource.data.senderId == request.auth.uid;
+        allow update: if false;
+      }
+    }
+
+    match /news/{nid} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /notifications/{uid}/items/{id} {
+      allow read, update: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn(); allow delete: if signedIn() && request.auth.uid == uid;
+    }
+  }
+}

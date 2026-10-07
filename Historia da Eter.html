@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>História da ETER | Eter News</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#000000">
+
+  <style>
+    /* ============================================================
+       DESIGN SYSTEM — VARIÁVEIS GLOBAIS
+    ============================================================ */
+    :root {
+      --color-bg:           #000000;
+      --color-surface-1:    #0d0d0d;
+      --color-surface-2:    #141414;
+      --color-surface-3:    #1e1e1e;
+      --color-border:       rgba(255,255,255,0.08);
+      --color-border-hover: rgba(255,255,255,0.22);
+      --color-white:        #ffffff;
+      --color-gray-100:     #f5f5f5;
+      --color-gray-300:     #b0b0b0;
+      --color-gray-500:     #6b6b6b;
+      --color-gold:         #f0b429;
+
+      --font-base:   'Inter', sans-serif;
+      --text-xs:     0.72rem;
+      --text-sm:     0.875rem;
+      --text-base:   1rem;
+      --text-lg:     1.125rem;
+      --text-xl:     1.35rem;
+      --text-2xl:    1.625rem;
+      --text-3xl:    2rem;
+      --text-4xl:    2.75rem;
+      --text-5xl:    3.75rem;
+
+      --sp-1:  4px;
+      --sp-2:  8px;
+      --sp-3:  12px;
+      --sp-4:  16px;
+      --sp-5:  20px;
+      --sp-6:  24px;
+      --sp-8:  32px;
+      --sp-10: 40px;
+      --sp-12: 48px;
+      --sp-16: 64px;
+      --sp-20: 80px;
+
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   16px;
+      --radius-xl:   24px;
+      --radius-full: 9999px;
+
+      --shadow-sm:  0 1px 3px  rgba(0,0,0,0.5);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.6);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,0.75);
+
+      --t-fast: 150ms ease;
+      --t-base: 260ms ease;
+      --t-slow: 420ms ease;
+
+      --max-width:  1140px;
+      --nav-height: 68px; --nav-h: 68px; --max-w: 1140px;
+    }
+
+    /* ============================================================ RESET */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-base);
+      background-color: var(--color-bg);
+      color: var(--color-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+    ul  { list-style: none; }
+    h1,h2,h3,h4,h5 { line-height: 1.2; font-weight: 700; }
+
+    /* ============================================================ LAYOUT */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--sp-6);
+    }
+
+    /* ── NAVBAR ── */
+    .site-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1000;
+        height: var(--nav-h);
+        background: rgba(0,0,0,0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--color-border);
+        transition: background var(--t-base);
+    }
+    .site-header.scrolled { background: rgba(0,0,0,0.97); }
+
+    .nav-inner {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-6);
+        padding: 0 var(--sp-6);
+    }
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-shrink: 0;
+    }
+    .nav-logo img { height: 38px; }
+    .nav-logo-text {
+        font-size: var(--text-xl);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+    }
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        flex: 1;
+    }
+    .nav-links a {
+        font-size: var(--text-xs);
+        font-weight: 600;
+        color: var(--color-gray-300);
+        padding: var(--sp-2) var(--sp-3);
+        border-radius: var(--radius-sm);
+        transition: color var(--t-fast), background var(--t-fast);
+        white-space: nowrap;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: var(--color-white);
+        background: rgba(255,255,255,0.08);
+    }
+    .nav-social {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-shrink: 0;
+    }
+    .nav-social a {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.15);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem;
+        color: var(--color-gray-300);
+        transition: all var(--t-fast);
+    }
+    .nav-social a:hover {
+        color: var(--color-white);
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.08);
+    }
+    .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px; height: 40px;
+        cursor: pointer;
+        padding: var(--sp-2);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        border: none;
+        margin-left: auto;
+        transition: background var(--t-fast);
+    }
+    .nav-hamburger:hover { background: rgba(255,255,255,0.08); }
+    .nav-hamburger span {
+        display: block;
+        width: 100%; height: 2px;
+        background: var(--color-white);
+        border-radius: 2px;
+        transition: transform var(--t-base), opacity var(--t-base);
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-mobile-panel {
+        display: none;
+        position: fixed;
+        top: var(--nav-h); left: 0; right: 0;
+        background: rgba(5,5,5,0.97);
+        backdrop-filter: blur(20px);
+        z-index: 999;
+        padding: var(--sp-6);
+        flex-direction: column;
+        gap: var(--sp-2);
+        border-bottom: 1px solid var(--color-border);
+        animation: slideDown 0.2s ease;
+    }
+    .nav-mobile-panel.open { display: flex; }
+    .nav-mobile-panel a {
+        font-size: var(--text-base);
+        font-weight: 600;
+        color: var(--color-gray-300);
+        padding: var(--sp-3) var(--sp-4);
+        border-radius: var(--radius-md);
+        transition: color var(--t-fast), background var(--t-fast);
+    }
+    .nav-mobile-panel a:hover {
+        color: var(--color-white);
+        background: rgba(255,255,255,0.06);
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+        position: relative;
+        min-height: 420px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding-top: var(--nav-h);
+        background:
+            linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.88) 100%),
+            url('https://quintinews.wordpress.com/wp-content/uploads/2012/05/imagem-085.jpg') center/cover no-repeat;
+    }
+    .hero-content {
+        text-align: center;
+        padding: var(--sp-12) var(--sp-6);
+        animation: fadeInUp 0.8s ease both;
+    }
+    .hero-eyebrow {
+        display: inline-block;
+        font-size: var(--text-xs);
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-gold);
+        background: rgba(240,180,41,0.10);
+        border: 1px solid rgba(240,180,41,0.28);
+        padding: var(--sp-1) var(--sp-4);
+        border-radius: var(--radius-full);
+        margin-bottom: var(--sp-5);
+    }
+    .hero-title {
+        font-size: clamp(var(--text-4xl), 8vw, var(--text-5xl));
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1;
+    }
+    .hero-sub {
+        margin-top: var(--sp-5);
+        font-size: var(--text-base);
+        color: var(--color-gray-300);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================ TICKER */
+    .ticker {
+      background: var(--color-surface-2);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--sp-2) 0;
+      overflow: hidden;
+      margin-top: var(--nav-height);
+    }
+    .ticker__track {
+      display: inline-block;
+      white-space: nowrap;
+      animation: tickerMove 28s linear infinite;
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+    }
+    @keyframes tickerMove {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* o ticker já fica logo abaixo do menu, então o hero não precisa do espaço extra do topo */
+    .hero { padding-top: 0; }
+
+    /* ============================================================ SECTION */
+    .section {
+      padding: var(--sp-16) 0;
+    }
+    .section--alt { background: var(--color-surface-1); }
+
+    .section__header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-10);
+    }
+    .section__bar {
+      width: 4px;
+      height: 32px;
+      background: var(--color-white);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .section__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+    }
+    .section__title em { font-style: normal; color: var(--color-gray-300); }
+
+    /* ============================================================ TIMELINE */
+    .timeline-section {
+      padding: var(--sp-16) 0;
+    }
+    .timeline-scroll-outer {
+      overflow-x: auto;
+      padding-bottom: var(--sp-4);
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-surface-3) transparent;
+    }
+    .timeline-scroll-outer::-webkit-scrollbar { height: 4px; }
+    .timeline-scroll-outer::-webkit-scrollbar-track { background: transparent; }
+    .timeline-scroll-outer::-webkit-scrollbar-thumb { background: var(--color-surface-3); border-radius: 2px; }
+
+    .timeline-track {
+      display: flex;
+      align-items: center;
+      min-width: max-content;
+      padding: var(--sp-6) var(--sp-2);
+      gap: 0;
+    }
+
+    .timeline-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-node__dot {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--color-border);
+      background: var(--color-surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+      font-weight: 800;
+      color: var(--color-gray-300);
+      transition: background var(--t-base), border-color var(--t-base), color var(--t-base), transform var(--t-base), box-shadow var(--t-base);
+    }
+    .timeline-node:hover .timeline-node__dot,
+    .timeline-node.active .timeline-node__dot {
+      background: var(--color-white);
+      border-color: var(--color-white);
+      color: var(--color-bg);
+      transform: scale(1.12);
+      box-shadow: 0 0 0 6px rgba(255,255,255,0.12);
+    }
+    .timeline-connector {
+      width: 60px;
+      height: 2px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .timeline-panel {
+      max-width: 860px;
+      margin: var(--sp-8) auto 0;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-8) var(--sp-10);
+      min-height: 180px;
+      transition: opacity var(--t-base);
+    }
+    .timeline-panel__date {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: var(--sp-3);
+    }
+    .timeline-panel__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      margin-bottom: var(--sp-4);
+    }
+    .timeline-panel__desc {
+      font-size: var(--text-base);
+      color: var(--color-gray-300);
+      line-height: 1.75;
+    }
+
+    /* ============================================================ NEWS ITEMS */
+    .news-list { display: flex; flex-direction: column; gap: var(--sp-8); }
+
+    .news-card {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: var(--sp-8);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--t-base), transform var(--t-base), box-shadow var(--t-base);
+    }
+    .news-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .news-card__img-wrap {
+      overflow: hidden;
+      height: 220px;
+    }
+    .news-card__img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--t-slow);
+    }
+    .news-card:hover .news-card__img-wrap img { transform: scale(1.05); }
+    .news-card__body {
+      padding: var(--sp-6) var(--sp-8) var(--sp-6) 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .news-card__title {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      margin-bottom: var(--sp-4);
+      line-height: 1.3;
+    }
+    .news-card__text {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      line-height: 1.75;
+    }
+
+    /* ============================================================ GALLERY */
+    .gallery-section { padding: var(--sp-16) 0; }
+
+    .gallery-promo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-10);
+      align-items: center;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .gallery-promo__img { height: 360px; overflow: hidden; }
+    .gallery-promo__img img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-promo__body { padding: var(--sp-10); }
+    .gallery-promo__label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-gray-500);
+      margin-bottom: var(--sp-4);
+    }
+    .gallery-promo__title {
+      font-size: var(--text-4xl);
+      font-weight: 900;
+      margin-bottom: var(--sp-4);
+    }
+    .gallery-promo__desc {
+      font-size: var(--text-base);
+      color: var(--color-gray-300);
+      margin-bottom: var(--sp-8);
+      line-height: 1.7;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-white);
+      background: #000000;
+      cursor: pointer;
+      border: 1.5px solid var(--color-border-hover);
+      padding: var(--sp-3) var(--sp-6);
+      border-radius: var(--radius-md);
+      transition: background var(--t-fast), border-color var(--t-fast);
+    }
+    .btn-outline:hover { background: #1a1a1a; border-color: rgba(255,255,255,0.4); }
+
+    /* ============================================================ GALLERY POPUP */
+    .gallery-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0,0,0,0.94);
+      backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-6);
+    }
+    .gallery-popup.open { display: flex; }
+    .popup-inner {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-8);
+      width: 100%;
+      max-width: 960px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .popup-close {
+      position: absolute;
+      top: var(--sp-4); right: var(--sp-4);
+      background: none;
+      border: none;
+      color: var(--color-white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: background var(--t-fast);
+    }
+    .popup-close:hover { background: rgba(255,255,255,0.1); }
+    .popup-title {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      margin-bottom: var(--sp-6);
+    }
+    .popup-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: var(--sp-3);
+    }
+    .popup-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      transition: transform var(--t-base);
+    }
+    .popup-grid img:hover { transform: scale(1.03); }
+
+    /* ============================================================ FOOTER */
+    .footer {
+      background: var(--color-surface-1);
+      border-top: 1px solid var(--color-border);
+      padding: var(--sp-16) 0 var(--sp-8);
+      margin-top: var(--sp-16);
+    }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: var(--sp-10);
+      margin-bottom: var(--sp-10);
+    }
+    .footer__logo-img { height: 44px; width: auto; margin-bottom: var(--sp-4); }
+    .footer__about { font-size: var(--text-sm); color: var(--color-gray-500); line-height: 1.7; }
+    .footer__col-title { font-size: var(--text-sm); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--sp-5); }
+    .footer__links li { margin-bottom: var(--sp-3); }
+    .footer__links a { font-size: var(--text-sm); color: var(--color-gray-500); transition: color var(--t-fast); }
+    .footer__links a:hover { color: var(--color-white); }
+    .footer__contact-row { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--text-sm); color: var(--color-gray-300); margin-bottom: var(--sp-2); }
+    .footer__contact-row i { color: var(--color-gray-500); }
+    .footer__contact-note { font-size: var(--text-xs); color: var(--color-gray-500); }
+    .footer__socials { display: flex; gap: var(--sp-3); }
+    .footer__social {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      color: var(--color-gray-300);
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), transform var(--t-base);
+    }
+    .footer__social:hover { background: rgba(255,255,255,0.1); border-color: var(--color-border-hover); color: var(--color-white); transform: translateY(-3px); }
+    .footer__bottom {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--sp-6);
+      display: flex;
+      justify-content: center;
+    }
+    .footer__copy { font-size: var(--text-xs); color: var(--color-gray-500); }
+
+    /* ============================================================ RESPONSIVE */
+    @media (max-width: 900px) {
+      .news-card { grid-template-columns: 1fr; }
+      .news-card__img-wrap { height: 200px; }
+      .news-card__body { padding: var(--sp-5); }
+      .gallery-promo { grid-template-columns: 1fr; }
+      .gallery-promo__img { height: 240px; }
+      .footer__grid { grid-template-columns: 1fr 1fr; gap: var(--sp-8); }
+      .popup-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+      :root { --nav-h: 58px; --nav-height: 58px; }
+      .nav-links, .nav-social { display: none; }
+      .nav-hamburger { display: flex; }
+      .hero { min-height: 320px; }
+      .hero-title { font-size: var(--text-4xl); }
+    }
+    @media (max-width: 600px) {
+      .timeline-panel { padding: var(--sp-6); }
+      .footer__grid { grid-template-columns: 1fr; }
+      .popup-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+<header class="site-header" id="site-header">
+    <div class="nav-inner">
+        <a href="index Eter news.html" class="nav-logo">
+            <img src="https://i.ibb.co/39Bkx3KJ/20250322-195214.png" alt="Eter News">
+            <span class="nav-logo-text">ETER NEWS</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index Eter news.html">Home</a>
+            <a href="Avisos eter.html">Avisos</a>
+            <a href="+ETER.html">+Eter</a>
+            <a href="esportes EterNews.html">Esportes</a>
+            <a href="Sobre Nos.html">Sobre Nós</a>
+            <a href="CONTAGEM.html">Agenda</a>
+            <a href="Historia da Eter.html" class="active">História</a>
+            <a href="Bem-estar.html">Bem-Estar</a>
+            <a href="jogos.html">Jogos</a>
+            <a href="Área de Estudo.html">Estudos</a>
+        </nav>
+
+        <div class="nav-social">
+            <a href="https://www.instagram.com/eter_news/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="http://tiktok.com/@eter_news" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://x.com/Eter_News" target="_blank" aria-label="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+        </div>
+
+        <button class="nav-hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile nav -->
+<nav class="nav-mobile-panel" id="mobile-panel">
+    <a href="index Eter news.html">Home</a>
+    <a href="Avisos eter.html">Avisos</a>
+    <a href="+ETER.html">+Eter</a>
+    <a href="esportes EterNews.html">Esportes</a>
+    <a href="Sobre Nos.html">Sobre Nós</a>
+    <a href="CONTAGEM.html">Agenda</a>
+    <a href="Historia da Eter.html">História</a>
+    <a href="Bem-estar.html">Bem-Estar</a>
+    <a href="jogos.html">Jogos</a>
+    <a href="Área de Estudo.html">Estudos</a>
+</nav>
+
+<!-- ===== TICKER ===== -->
+  <div class="ticker">
+    <p class="ticker__track">
+      📜 1903: Fundação da Escola XV de Novembro &nbsp;•&nbsp;
+      🏫 1987: Criação da FAEP &nbsp;•&nbsp;
+      🎓 1997: Transformação em FAETEC &nbsp;•&nbsp;
+      🏛️ ETER República — Mais de 120 anos de história &nbsp;•&nbsp;
+      📚 Lei nº 10.913: Dia da FAETEC oficializado em 15 de maio &nbsp;•&nbsp;
+      📖 Escola Técnica Estadual República | Quintino Bocaiúva, RJ &nbsp;•&nbsp;
+    </p>
+  </div>
+
+  <!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-content">
+        <p class="hero-eyebrow">Memória &amp; Identidade</p>
+        <h1 class="hero-title">História da ETER</h1>
+        <p class="hero-sub">Mais de um século de educação e transformação social</p>
+    </div>
+</section>
+
+  <!-- ===== LINHA DO TEMPO ===== -->
+  <section class="timeline-section">
+    <div class="container">
+
+      <div class="section__header">
+        <div class="section__bar"></div>
+        <h2 class="section__title">Linha do <em>Tempo</em></h2>
+      </div>
+
+      <div class="timeline-scroll-outer">
+        <div class="timeline-track" role="list">
+
+          <div class="timeline-node active" role="listitem" tabindex="0"
+               data-title="1903: Fundação"
+               data-date="Março de 1903"
+               data-desc="Início das atividades escolares no local, oferecendo educação básica para a comunidade de Quintino Bocaiúva.">
+            <div class="timeline-node__dot">1903</div>
+          </div>
+          <div class="timeline-connector"></div>
+
+          <div class="timeline-node" role="listitem" tabindex="0"
+               data-title="1923: Transformação"
+               data-date="Dezembro de 1923"
+               data-desc="Encerramento da Escola Técnica Estadual XV de Novembro; o prédio passa a abrigar instituições voltadas ao atendimento de menores, como o SAM.">
+            <div class="timeline-node__dot">1923</div>
+          </div>
+          <div class="timeline-connector"></div>
+
+          <div class="timeline-node" role="listitem" tabindex="0"
+               data-title="1987: FAEP"
+               data-date="Julho de 1987"
+               data-desc="Criação da Fundação de Apoio à Escola Pública (FAEP) pelo governador Moreira Franco, transformando a unidade em um centro de ensino técnico.">
+            <div class="timeline-node__dot">1987</div>
+          </div>
+          <div class="timeline-connector"></div>
+
+          <div class="timeline-node" role="listitem" tabindex="0"
+               data-title="1997: FAETEC"
+               data-date="Janeiro de 1997"
+               data-desc="A FAEP torna-se oficialmente FAETEC, iniciando cursos profissionalizantes gratuitos e fortalecendo a educação técnica no Rio de Janeiro.">
+            <div class="timeline-node__dot">1997</div>
+          </div>
+          <div class="timeline-connector"></div>
+
+          <div class="timeline-node" role="listitem" tabindex="0"
+               data-title="2006–2011: Nome Atual"
+               data-date="2006 a 2011"
+               data-desc="Tentativa de renomear a escola para Escola Técnica Estadual Deputado Albano Reis em 2006; nome rejeitado pela comunidade e revogado em 2011, retornando ao nome Escola Técnica Estadual República (ETER).">
+            <div class="timeline-node__dot" style="font-size:0.6rem;">2006–2011</div>
+          </div>
+
+        </div>
+      </div>
+
+      <article class="timeline-panel" id="timelinePanel" aria-live="polite">
+        <div class="timeline-panel__date" id="panelDate">Março de 1903</div>
+        <h3 class="timeline-panel__title" id="panelTitle">1903: Fundação</h3>
+        <p class="timeline-panel__desc" id="panelDesc">Início das atividades escolares no local, oferecendo educação básica para a comunidade de Quintino Bocaiúva.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== VOCÊ SABIA ===== -->
+  <section class="section section--alt">
+    <div class="container">
+
+      <div class="section__header">
+        <div class="section__bar"></div>
+        <h2 class="section__title">Você <em>Sabia?</em></h2>
+      </div>
+
+      <div class="news-list">
+
+        <div class="news-card">
+          <div class="news-card__img-wrap">
+            <img src="https://i.ibb.co/FQy4HQL/imagem-2025-09-07-231635937.png" alt="Quintino Bocaiúva — história">
+          </div>
+          <div class="news-card__body">
+            <h3 class="news-card__title">Quintino Bocaiúva: um espaço marcado pela educação e transformação social</h3>
+            <p class="news-card__text">O prédio de Quintino Bocaiúva tem mais de um século de história. Inaugurado como Escola XV de Novembro em 1903, passou a ser Escola Premonitória XV de Novembro em 1910 e depois Escola Sete de Setembro em 1923. A partir de 1941, abrigou o Serviço de Assistência aos Menores (SAM) e, posteriormente, o Instituto Profissional 15 de Novembro, vinculado à FUNABEM até a década de 1990. Após a desativação, o prédio foi cedido à FAETEC, onde continua funcionando como espaço educativo.</p>
+          </div>
+        </div>
+
+        <div class="news-card">
+          <div class="news-card__img-wrap">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbccuHvc-xhe2qhq4pbdQPuJ5kCjkia1z70ruABKw1XQlbtkvB_nr4UIJ6&s=10" alt="FAETEC história">
+          </div>
+          <div class="news-card__body">
+            <h3 class="news-card__title">FAETEC: rede de ensino técnico e histórico no RJ</h3>
+            <p class="news-card__text">Fundada em 1997, a FAETEC é ligada à Secretaria de Estado de Ciência, Tecnologia e Inovação e conta com 120 unidades em 59 municípios, oferecendo formação do ensino básico ao superior. Além da educação, muitos de seus prédios guardam valor histórico, como a ETET Martins Pena, inaugurada em 1910 e, desde 1953, instalada no antigo casarão do Barão do Rio Branco, tombado pelo IPHAN.</p>
+          </div>
+        </div>
+
+        <div class="news-card">
+          <div class="news-card__img-wrap">
+            <img src="https://i.ibb.co/cKqj1wSp/imagem-2025-09-07-232119635.png" alt="Quintino Bocaiúva anos 1970">
+          </div>
+          <div class="news-card__body">
+            <h3 class="news-card__title">Quintino Bocaiúva nos anos 1970</h3>
+            <p class="news-card__text">Na década de 1970, o prédio da Rua Clarimundo de Melo abrigava a Fundação Nacional do Bem-Estar do Menor (FUNABEM). Com o passar do tempo, o espaço se transformou e hoje é sede de um dos campi da Fundação de Apoio à Escola Técnica (FAETEC), mantendo viva sua vocação educacional e social.</p>
+          </div>
+        </div>
+
+        <div class="news-card">
+          <div class="news-card__img-wrap">
+            <img src="https://i.ibb.co/5hVGFrMK/imagem-2025-09-07-232641003.png" alt="Dia da FAETEC">
+          </div>
+          <div class="news-card__body">
+            <h3 class="news-card__title">Dia da FAETEC é oficializado em 15 de maio</h3>
+            <p class="news-card__text">Foi publicada no Diário Oficial do Estado do Rio de Janeiro, em 28 de agosto de 2025, a Lei nº 10.913, que estabelece o Dia da FAETEC, a ser comemorado anualmente em 15 de maio. A medida reconhece a importância da FAETEC na formação profissional e no desenvolvimento científico e tecnológico do estado.</p>
+          </div>
+        </div>
+
+        <div class="news-card">
+          <div class="news-card__img-wrap">
+            <img src="https://i.ibb.co/G30jQYbC/imagem-2025-09-07-232954363.png" alt="Livro história educação profissional">
+          </div>
+          <div class="news-card__body">
+            <h3 class="news-card__title">Livro sobre história da educação profissional é lançado no RJ</h3>
+            <p class="news-card__text">Em 15 de setembro de 2023, foi lançado o livro "História e Memória da Educação Profissional no Rio de Janeiro – II", organizado por Isabella Gaze e o CEMEF. A obra reúne estudos sobre escolas da FAETEC, como Martins Pena, ISERJ e ETE República, destacando a importância de preservar a memória escolar.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALERIA ===== -->
+  <section class="gallery-section">
+    <div class="container">
+
+      <div class="section__header">
+        <div class="section__bar"></div>
+        <h2 class="section__title">Galeria <em>Histórica</em></h2>
+      </div>
+
+      <div class="gallery-promo">
+        <div class="gallery-promo__img">
+          <img src="https://i.ibb.co/wh855L5C/20250501-224343.jpg" alt="Galeria ETER">
+        </div>
+        <div class="gallery-promo__body">
+          <p class="gallery-promo__label">Acervo fotográfico</p>
+          <h3 class="gallery-promo__title">GALERIA</h3>
+          <p class="gallery-promo__desc">Explore nossa coleção de imagens que capturam os melhores momentos da história da ETER República ao longo das décadas.</p>
+          <button class="btn-outline" id="openGallery">
+            <i class="fas fa-images"></i> Abrir Galeria
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Gallery Popup -->
+  <div class="gallery-popup" id="galleryPopup">
+    <div class="popup-inner">
+      <button class="popup-close" id="closeGallery" aria-label="Fechar">&times;</button>
+      <h2 class="popup-title">Galeria de Imagens</h2>
+      <div class="popup-grid">
+        <img src="https://i.ibb.co/zWZzXRB7/imagem-2025-09-12-195349137.png" alt="Foto histórica 1">
+        <img src="https://i.ibb.co/21g8tr1K/imagem-2025-09-12-201511925.png" alt="Foto histórica 2">
+        <img src="https://i.ibb.co/Q7kVwcRy/imagem-2025-09-12-201729752.png" alt="Foto histórica 3">
+        <img src="https://i.ibb.co/S47PFXBm/imagem-2025-09-12-202150603.png" alt="Foto histórica 4">
+        <img src="https://i.ibb.co/qFJy2LLH/imagem-2025-09-12-202245695.png" alt="Foto histórica 5">
+        <img src="https://i.ibb.co/ch63JST0/imagem-2025-09-12-202341105.png" alt="Foto histórica 6">
+        <img src="https://i.ibb.co/3Ypn19TG/imagem-2025-09-12-202613841.png" alt="Foto histórica 7">
+        <img src="https://i.ibb.co/g5svq3j/imagem-2025-09-12-202651682.png" alt="Foto histórica 8">
+        <img src="https://i.ibb.co/HLzVs3gB/imagem-2025-09-12-202737661.png" alt="Foto histórica 9">
+        <img src="https://i.ibb.co/kgg9GL9n/imagem-2025-09-12-202805261.png" alt="Foto histórica 10">
+        <img src="https://i.ibb.co/B5bykVJf/imagem-2025-09-12-202912175.png" alt="Foto histórica 11">
+        <img src="https://i.ibb.co/9Hk5BkWw/imagem-2025-09-12-203051235.png" alt="Foto histórica 12">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="https://i.ibb.co/gL0Z997g/20250324-003205.png" alt="Eter News" class="footer__logo-img">
+          <p class="footer__about">A plataforma da ETER República mantém alunos e a comunidade escolar atualizados sobre notícias, eventos e oportunidades em tempo real, facilitando o acesso a informações e garantindo que ninguém perca eventos ou chances profissionais.</p>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Contato</h4>
+          <div class="footer__contact-row">
+            <i class="far fa-envelope"></i>
+            <a href="mailto:eternews@email.com">eternews@email.com</a>
+          </div>
+          <p class="footer__contact-note">Envie suas sugestões e entre em contato conosco.</p>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Links</h4>
+          <ul class="footer__links">
+            <li><a href="index Eter news.html">Home</a></li>
+            <li><a href="Sobre Nos.html">Sobre Nós</a></li>
+            <li><a href="Avisos eter.html">Avisos</a></li>
+            <li><a href="CONTAGEM.html">Agenda</a></li>
+            <li><a href="+ETER.html">+Eter</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Redes Sociais</h4>
+          <div class="footer__socials">
+            <a href="https://www.instagram.com/eter_news/" target="_blank" rel="noopener" class="footer__social" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@eter_news" target="_blank" rel="noopener" class="footer__social" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://x.com/Eter_News" target="_blank" rel="noopener" class="footer__social" aria-label="Twitter/X"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="footer__copy">&copy; 2025 Eter News — ETE República. Todos os direitos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── NAVBAR SCROLL ── */
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+        siteHeader.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── HAMBURGER ── */
+    const hamburger   = document.getElementById('hamburger');
+    const mobilePanel = document.getElementById('mobile-panel');
+
+    hamburger.addEventListener('click', () => {
+        const open = mobilePanel.classList.toggle('open');
+        hamburger.classList.toggle('open', open);
+        hamburger.setAttribute('aria-expanded', open);
+    });
+    mobilePanel.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            mobilePanel.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', false);
+        });
+    });
+    document.addEventListener('click', (e) => {
+        if (!siteHeader.contains(e.target) && !mobilePanel.contains(e.target)) {
+            mobilePanel.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', false);
+        }
+    });
+
+    /* Timeline */
+    const nodes        = document.querySelectorAll('.timeline-node');
+    const panelDate    = document.getElementById('panelDate');
+    const panelTitle   = document.getElementById('panelTitle');
+    const panelDesc    = document.getElementById('panelDesc');
+    const panel        = document.getElementById('timelinePanel');
+
+    function activateNode(node) {
+      nodes.forEach(n => n.classList.remove('active'));
+      node.classList.add('active');
+      panel.style.opacity = '0';
+      setTimeout(() => {
+        panelDate.textContent  = node.dataset.date;
+        panelTitle.textContent = node.dataset.title;
+        panelDesc.textContent  = node.dataset.desc;
+        panel.style.opacity = '1';
+        panel.style.transition = 'opacity 0.3s ease';
+      }, 180);
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener('click', () => activateNode(node));
+      node.addEventListener('mouseenter', () => activateNode(node));
+      node.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateNode(node); }
+      });
+    });
+
+    /* Gallery popup */
+    const openBtn     = document.getElementById('openGallery');
+    const closeBtn    = document.getElementById('closeGallery');
+    const galleryPop  = document.getElementById('galleryPopup');
+
+    openBtn.addEventListener('click', () => galleryPop.classList.add('open'));
+    closeBtn.addEventListener('click', () => galleryPop.classList.remove('open'));
+    galleryPop.addEventListener('click', e => {
+      if (e.target === galleryPop) galleryPop.classList.remove('open');
+    });
+  </script>
+</body>
+</html>

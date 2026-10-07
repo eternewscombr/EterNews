@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Desafio do Saber · Eter News</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Page Icon -->
+    <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+    <!-- Favicon para modo claro (ícone escuro) -->
+    <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)" />
+    <!-- Favicon para modo escuro (ícone claro) -->
+    <link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)" />
+
+    <meta name="theme-color" content="#000000">
+
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: #0c0f13;
+            --surface-2: #12161c;
+            --line: #232a33;
+            --line-strong: #323b47;
+            --text: #f3f4f6;
+            --muted: #9aa3af;
+            --accent: #10b981;
+            --accent-ink: #03140d;
+            --accent-soft: rgba(16, 185, 129, 0.12);
+            --bad: #f87171;
+            --bad-soft: rgba(248, 113, 113, 0.12);
+            --warn: #fbbf24;
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button { font: inherit; color: inherit; }
+
+        .qz-app {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
+        }
+
+        /* ---------- Barra superior ---------- */
+        .qz-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 44px;
+            margin-bottom: 8px;
+        }
+
+        .qz-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+            padding: 0 12px 0 6px;
+            margin-left: -6px;
+            background: none;
+            border: 0;
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color .15s ease, background .15s ease;
+        }
+        .qz-back:hover { color: var(--text); background: var(--surface-2); }
+        .qz-back svg { width: 20px; height: 20px; }
+
+        .qz-brand {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .qz-brand b { color: var(--accent); font-weight: 700; }
+
+        /* ---------- Cabeçalho (só na tela inicial) ---------- */
+        .qz-header { text-align: center; margin: 8px 0 24px; }
+        .qz-header h1 {
+            margin: 0 0 6px;
+            font-size: clamp(1.9rem, 7vw, 2.6rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+        .qz-header p { margin: 0; color: var(--muted); font-size: 1rem; }
+
+        /* ---------- Cartões ---------- */
+        .qz-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        /* ---------- Botões ---------- */
+        .qz-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            padding: 0 24px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .15s ease, border-color .15s ease, transform .1s ease, opacity .15s ease;
+        }
+        .qz-btn:active:not(:disabled) { transform: scale(0.98); }
+        .qz-btn:focus-visible,
+        .qz-option:focus-visible,
+        .qz-back:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+        .qz-btn-primary { background: var(--accent); color: var(--accent-ink); }
+        .qz-btn-primary:hover:not(:disabled) { background: #34d399; }
+        .qz-btn-primary:disabled { background: #1b2229; color: #5d6773; cursor: not-allowed; }
+        .qz-btn-secondary { background: transparent; color: var(--text); border-color: var(--line-strong); }
+        .qz-btn-secondary:hover { background: var(--surface-2); }
+        .qz-btn-ghost { background: transparent; color: var(--muted); min-height: 44px; }
+        .qz-btn-ghost:hover { color: var(--text); }
+        .qz-btn-block { width: 100%; }
+        .qz-btn svg { width: 18px; height: 18px; flex: none; }
+
+        /* ---------- Tela inicial ---------- */
+        .qz-start { text-align: center; padding: 28px 20px 24px; }
+        .qz-start-icon {
+            width: 64px; height: 64px; margin: 0 auto 16px;
+            display: grid; place-items: center;
+            border-radius: 18px;
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+        .qz-start-icon svg { width: 34px; height: 34px; }
+        .qz-start h2 { margin: 0 0 10px; font-size: 1.4rem; font-weight: 700; }
+        .qz-start p { margin: 0 auto 20px; max-width: 460px; color: var(--muted); }
+        .qz-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 24px; }
+        .qz-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            font-size: 0.85rem; font-weight: 500; color: var(--text);
+        }
+        .qz-chip svg { width: 14px; height: 14px; color: var(--bad); }
+        .qz-start .qz-btn { width: 100%; max-width: 320px; }
+
+        /* ---------- HUD (progresso, pontos, vidas) ---------- */
+        .qz-hud { margin-bottom: 14px; }
+        .qz-hud-row {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-bottom: 10px;
+        }
+        .qz-counter { font-size: 0.95rem; font-weight: 600; }
+        .qz-counter span { color: var(--muted); font-weight: 500; }
+        .qz-hud-right { display: flex; align-items: center; gap: 14px; }
+        .qz-score { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+        .qz-score b { color: var(--text); font-weight: 700; }
+        .qz-lives { display: flex; gap: 3px; }
+        .qz-heart { width: 20px; height: 20px; color: var(--bad); transition: opacity .2s ease, transform .2s ease; }
+        .qz-heart.is-lost { opacity: .22; transform: scale(.85); }
+        .qz-bar { height: 6px; border-radius: 999px; background: #1a2027; overflow: hidden; }
+        .qz-bar-fill { height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width .35s ease; }
+
+        /* ---------- Pergunta ---------- */
+        .qz-fade { animation: qz-fade .18s ease both; }
+        @keyframes qz-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+        .qz-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+        .qz-tag {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem; font-weight: 600;
+            letter-spacing: .02em;
+        }
+        .qz-tag-subject { background: var(--accent-soft); color: var(--accent); }
+        .qz-tag-diff { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+
+        .qz-question {
+            margin: 0 0 20px;
+            font-size: clamp(1.2rem, 4.6vw, 1.65rem);
+            line-height: 1.35;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            overflow-wrap: anywhere;
+            outline: none;
+        }
+
+        .qz-options { display: grid; gap: 10px; }
+
+        .qz-option {
+            display: grid;
+            grid-template-columns: 32px 1fr 24px;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            min-height: 58px;
+            padding: 12px 14px;
+            text-align: left;
+            background: var(--surface-2);
+            border: 1.5px solid var(--line);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.35;
+            cursor: pointer;
+            transition: border-color .15s ease, background .15s ease, opacity .2s ease;
+        }
+        .qz-option:disabled { cursor: default; color: var(--text); }
+        .qz-option:hover:not(:disabled) { border-color: var(--line-strong); background: #161b22; }
+
+        .qz-letter {
+            width: 32px; height: 32px;
+            display: grid; place-items: center;
+            border-radius: 9px;
+            border: 1.5px solid var(--line-strong);
+            font-size: 0.85rem; font-weight: 700; color: var(--muted);
+            transition: all .15s ease;
+        }
+        .qz-opt-text { overflow-wrap: anywhere; }
+        .qz-opt-status { width: 24px; height: 24px; display: grid; place-items: center; }
+        .qz-opt-status svg { width: 22px; height: 22px; }
+
+        .qz-option.is-selected { border-color: var(--accent); background: var(--accent-soft); }
+        .qz-option.is-selected .qz-letter { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+        .qz-option.is-correct { border-color: var(--accent); background: var(--accent-soft); }
+        .qz-option.is-correct .qz-letter { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+        .qz-option.is-correct .qz-opt-status { color: var(--accent); }
+
+        .qz-option.is-wrong { border-color: var(--bad); background: var(--bad-soft); animation: qz-shake .3s ease; }
+        .qz-option.is-wrong .qz-letter { background: var(--bad); border-color: var(--bad); color: #2a0707; }
+        .qz-option.is-wrong .qz-opt-status { color: var(--bad); }
+
+        .qz-option.is-dim { opacity: .5; }
+
+        @keyframes qz-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        /* ---------- Feedback ---------- */
+        .qz-feedback {
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            animation: qz-fade .18s ease both;
+        }
+        .qz-feedback.is-correct { background: var(--accent-soft); border-color: rgba(16, 185, 129, .45); }
+        .qz-feedback.is-wrong { background: var(--bad-soft); border-color: rgba(248, 113, 113, .45); }
+        .qz-fb-head { display: flex; align-items: center; gap: 10px; }
+        .qz-fb-icon {
+            width: 30px; height: 30px; flex: none;
+            display: grid; place-items: center;
+            border-radius: 50%;
+            animation: qz-pop .28s ease both;
+        }
+        .qz-fb-icon svg { width: 18px; height: 18px; }
+        .is-correct .qz-fb-icon { background: var(--accent); color: var(--accent-ink); }
+        .is-wrong .qz-fb-icon { background: var(--bad); color: #2a0707; }
+        .qz-fb-icon .qz-draw { stroke-dasharray: 24; stroke-dashoffset: 24; animation: qz-draw .3s .1s ease forwards; }
+        .qz-fb-title { font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; }
+        .is-correct .qz-fb-title { color: var(--accent); }
+        .is-wrong .qz-fb-title { color: var(--bad); }
+        .qz-fb-body { margin: 8px 0 0; font-size: 0.95rem; color: #d1d5db; overflow-wrap: anywhere; }
+        .qz-fb-body p { margin: 0 0 4px; }
+        .qz-fb-body p:last-child { margin-bottom: 0; }
+        .qz-fb-body strong { color: var(--text); }
+        .qz-fb-note { color: var(--muted); font-size: 0.85rem; }
+
+        @keyframes qz-pop {
+            0% { transform: scale(.5); opacity: 0; }
+            70% { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes qz-draw { to { stroke-dashoffset: 0; } }
+
+        /* ---------- Barra de ação (fixa embaixo no celular) ---------- */
+        .qz-actions {
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+            margin: 14px -16px 0;
+            padding: 14px 16px calc(6px + env(safe-area-inset-bottom));
+            background: linear-gradient(to top, var(--bg) 72%, rgba(0, 0, 0, 0));
+        }
+
+        /* ---------- Resultado ---------- */
+        .qz-result { text-align: center; padding: 28px 20px 22px; }
+        .qz-eyebrow {
+            margin: 0 0 18px;
+            font-size: 0.8rem; font-weight: 700;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--muted);
+        }
+        .qz-ring { position: relative; width: 168px; height: 168px; margin: 0 auto 18px; }
+        .qz-ring svg { width: 100%; height: 100%; }
+        .qz-ring-bg { fill: none; stroke: #1a2027; stroke-width: 9; }
+        .qz-ring-fg {
+            fill: none; stroke: var(--accent); stroke-width: 9; stroke-linecap: round;
+            stroke-dasharray: 100; stroke-dashoffset: 100;
+            transition: stroke-dashoffset .6s ease, stroke .2s ease;
+        }
+        .qz-ring.is-mid .qz-ring-fg { stroke: var(--warn); }
+        .qz-ring.is-low .qz-ring-fg { stroke: var(--bad); }
+        .qz-ring-label {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .qz-ring-pct { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+        .qz-ring-sub { margin-top: 4px; font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+
+        .qz-hero { margin: 0 0 4px; font-size: clamp(1.5rem, 6vw, 2rem); font-weight: 800; letter-spacing: -0.02em; }
+        .qz-rank { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--accent); }
+        .qz-rank.is-mid { color: var(--warn); }
+        .qz-rank.is-low { color: var(--bad); }
+        .qz-rank-msg { margin: 0 auto 22px; max-width: 420px; color: var(--muted); font-size: 0.95rem; }
+
+        .qz-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+        .qz-stat { padding: 14px 8px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
+        .qz-stat b { display: block; font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
+        .qz-stat span { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+        .qz-stat.is-ok b { color: var(--accent); }
+        .qz-stat.is-bad b { color: var(--bad); }
+
+        .qz-result-actions { display: grid; gap: 10px; max-width: 360px; margin: 0 auto; }
+
+        /* ---------- Telas maiores ---------- */
+        @media (min-width: 640px) {
+            .qz-app { padding-top: 20px; }
+            .qz-card { padding: 28px; }
+            .qz-start { padding: 40px 32px 32px; }
+            .qz-option { min-height: 62px; padding: 14px 16px; font-size: 1.05rem; }
+            .qz-actions { position: static; margin: 18px 0 0; padding: 0; background: none; }
+            .qz-btn-block { width: auto; min-width: 240px; float: right; }
+            .qz-actions::after { content: ''; display: block; clear: both; }
+            .qz-result { padding: 40px 32px 32px; }
+            .qz-result-actions { max-width: 420px; }
+        }
+
+        @media (max-width: 360px) {
+            .qz-app { padding-left: 12px; padding-right: 12px; }
+            .qz-actions { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
+            .qz-card { padding: 16px; }
+            .qz-score { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qz-app">
+
+        <!-- Barra superior -->
+        <div class="qz-topbar">
+            <button type="button" class="qz-back" id="qz-back" aria-label="Voltar para a página anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Voltar
+            </button>
+            <span class="qz-brand">Eter <b>News</b></span>
+        </div>
+
+        <!-- Cabeçalho (só na tela inicial) -->
+        <header class="qz-header" id="qz-header">
+            <h1>Desafio do Saber</h1>
+            <p>Teste seus conhecimentos educacionais offline!</p>
+        </header>
+
+        <!-- Tela inicial -->
+        <section class="qz-card qz-start qz-fade" id="qz-start">
+            <div class="qz-start-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3A3.5 3.5 0 0 0 6 6.5a3.5 3.5 0 0 0-2 6.3A3.5 3.5 0 0 0 7.5 18 3.5 3.5 0 0 0 12 19.5V4.6A3.5 3.5 0 0 0 9.5 3z"/><path d="M14.5 3A3.5 3.5 0 0 1 18 6.5a3.5 3.5 0 0 1 2 6.3 3.5 3.5 0 0 1-3.5 5.2A3.5 3.5 0 0 1 12 19.5"/></svg>
+            </div>
+            <h2>Bem-vindo ao Desafio!</h2>
+            <p>Teste seus conhecimentos em matérias do ensino médio. Responda 10 perguntas, uma de cada vez, e veja a explicação logo após cada resposta. Cada erro custa uma vida: com 3 erros, o jogo termina.</p>
+            <div class="qz-chips">
+                <span class="qz-chip">10 perguntas</span>
+                <span class="qz-chip">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    3 vidas
+                </span>
+                <span class="qz-chip">10 pontos por acerto</span>
+            </div>
+            <button type="button" class="qz-btn qz-btn-primary" id="qz-start-btn">Começar jogo</button>
+        </section>
+
+        <!-- Quiz -->
+        <section id="qz-quiz" hidden>
+            <div class="qz-hud">
+                <div class="qz-hud-row">
+                    <div class="qz-counter" id="qz-counter">Pergunta 1 <span>de 10</span></div>
+                    <div class="qz-hud-right">
+                        <div class="qz-score">Pontos <b id="qz-score">0</b></div>
+                        <div class="qz-lives" id="qz-lives" role="img" aria-label="3 vidas restantes"></div>
+                    </div>
+                </div>
+                <div class="qz-bar" id="qz-bar" role="progressbar" aria-label="Progresso do quiz" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+                    <div class="qz-bar-fill" id="qz-bar-fill"></div>
+                </div>
+            </div>
+
+            <article class="qz-card qz-fade" id="qz-card">
+                <div class="qz-meta">
+                    <span class="qz-tag qz-tag-subject" id="qz-subject">Matemática</span>
+                    <span class="qz-tag qz-tag-diff" id="qz-diff">Fácil</span>
+                </div>
+                <h2 class="qz-question" id="qz-question" tabindex="-1"></h2>
+                <div class="qz-options" id="qz-options" role="radiogroup" aria-labelledby="qz-question"></div>
+
+                <div class="qz-feedback" id="qz-feedback" hidden role="status" aria-live="polite">
+                    <div class="qz-fb-head">
+                        <span class="qz-fb-icon" id="qz-fb-icon" aria-hidden="true"></span>
+                        <span class="qz-fb-title" id="qz-fb-title"></span>
+                    </div>
+                    <div class="qz-fb-body" id="qz-fb-body"></div>
+                </div>
+            </article>
+
+            <div class="qz-actions">
+                <button type="button" class="qz-btn qz-btn-primary qz-btn-block" id="qz-action" disabled>Confirmar resposta</button>
+            </div>
+        </section>
+
+        <!-- Resultado -->
+        <section class="qz-card qz-result" id="qz-result" hidden>
+            <p class="qz-eyebrow" id="qz-eyebrow">Quiz concluído</p>
+
+            <div class="qz-ring" id="qz-ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="qz-ring-bg" cx="60" cy="60" r="52" pathLength="100"></circle>
+                    <circle class="qz-ring-fg" id="qz-ring-fg" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)"></circle>
+                </svg>
+                <div class="qz-ring-label">
+                    <span class="qz-ring-pct" id="qz-pct">0%</span>
+                    <span class="qz-ring-sub">de aproveitamento</span>
+                </div>
+            </div>
+
+            <h2 class="qz-hero" id="qz-hero">0/10 acertos</h2>
+            <p class="qz-rank" id="qz-rank"></p>
+            <p class="qz-rank-msg" id="qz-rank-msg"></p>
+
+            <div class="qz-stats">
+                <div class="qz-stat"><b id="qz-r-score">0</b><span>Pontos</span></div>
+                <div class="qz-stat is-ok"><b id="qz-r-correct">0</b><span>Acertos</span></div>
+                <div class="qz-stat is-bad"><b id="qz-r-wrong">0</b><span>Erros</span></div>
+            </div>
+
+            <div class="qz-result-actions">
+                <button type="button" class="qz-btn qz-btn-primary" id="qz-again-btn">Jogar novamente</button>
+                <button type="button" class="qz-btn qz-btn-secondary" id="qz-share-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+                    <span id="qz-share-label">Compartilhar</span>
+                </button>
+                <button type="button" class="qz-btn qz-btn-ghost" id="qz-leave-btn">Voltar</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+(function () {
+    'use strict';
+
+    // ---------------------------------------------------------------
+    // Perguntas (as 30 originais, sem alterações)
+    // ---------------------------------------------------------------
+    const questions = [
+        // 30 perguntas pré-cadastradas
+        { question: "Quanto é 5 x 6?", options: ["25", "30", "36", "20"], correct: 1, subject: "Matemática", difficulty: "Fácil", explanation: "5 x 6 = 30 (cinco vezes seis)." },
+        { question: "Qual é a capital do Brasil?", options: ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"], correct: 2, subject: "Geografia", difficulty: "Fácil", explanation: "Brasília é a capital do Brasil desde 1960." },
+        { question: "Quantas sílabas tem a palavra 'banana'?", options: ["2", "3", "4", "5"], correct: 1, subject: "Português", difficulty: "Fácil", explanation: "Ba-na-na = 3 sílabas." },
+        { question: "Qual é a capital da Argentina?", options: ["Montevidéu", "Lima", "Buenos Aires", "Santiago"], correct: 2, subject: "Geografia", difficulty: "Médio", explanation: "Buenos Aires é a capital e maior cidade da Argentina." },
+        { question: "O que é uma mitocôndria?", options: ["Parte do sistema nervoso", "Organela responsável pela respiração celular", "Tipo de célula sanguínea", "Estrutura responsável pela divisão celular"], correct: 1, subject: "Biologia", difficulty: "Médio", explanation: "A mitocôndria é a organela celular responsável pela produção de energia (respiração celular)." },
+        { question: "Qual destes é um número primo?", options: ["9", "15", "17", "21"], correct: 2, subject: "Matemática", difficulty: "Médio", explanation: "17 só pode ser dividido por 1 e por ele mesmo, sendo um número primo." },
+        { question: "Quem escreveu 'Os Lusíadas'?", options: ["Fernando Pessoa", "Luís de Camões", "Eça de Queirós", "Machado de Assis"], correct: 1, subject: "Literatura", difficulty: "Difícil", explanation: "'Os Lusíadas' é a obra mais importante de Luís Vaz de Camões, publicada em 1572." },
+        { question: "Qual destes elementos químicos é um gás nobre?", options: ["Oxigênio", "Hélio", "Cloro", "Nitrogênio"], correct: 1, subject: "Química", difficulty: "Difícil", explanation: "O Hélio (He) faz parte da família dos gases nobres que são pouco reativos." },
+        { question: "Em que ano o Brasil declarou sua independência?", options: ["1808", "1822", "1840", "1889"], correct: 1, subject: "História", difficulty: "Difícil", explanation: "O Brasil declarou independência de Portugal em 7 de setembro de 1822." },
+        { question: "Explique a diferença entre força e pressão na Física:", options: ["Força é massa x aceleração, pressão é força/área", "Força e pressão são a mesma coisa", "Força é energia, pressão é força x tempo", "Força é direcional, pressão não existe"], correct: 0, subject: "Física", difficulty: "Desafio", explanation: "Força = massa x aceleração (F = m.a). Pressão = força distribuída sobre uma área (P = F/A)." },
+
+        // 20 novas perguntas
+        { question: "Qual é a fórmula da área do triângulo?", options: ["base × altura", "(base + altura) ÷ 2", "(base × altura) ÷ 2", "base² + altura²"], correct: 2, subject: "Matemática", difficulty: "Fácil", explanation: "A fórmula da área do triângulo é (base × altura) ÷ 2." },
+        { question: "Em que ano foi proclamada a República no Brasil?", options: ["1500", "1889", "1822", "1989"], correct: 1, subject: "História", difficulty: "Fácil", explanation: "A República foi proclamada no Brasil em 1889." },
+        { question: "Qual é o símbolo químico da água?", options: ["O₂", "CO₂", "H₂O", "OH"], correct: 2, subject: "Química", difficulty: "Fácil", explanation: "O símbolo químico da água é H₂O." },
+        { question: "Qual é o sujeito da frase: 'As crianças brincavam no pátio'?", options: ["brincavam", "no pátio", "As crianças", "pátio"], correct: 2, subject: "Português", difficulty: "Fácil", explanation: "O sujeito da frase é 'As crianças'." },
+        { question: "Qual a velocidade da luz no vácuo?", options: ["150.000 km/h", "300.000 km/s", "299.792 km/h", "1.080.000 km/s"], correct: 1, subject: "Física", difficulty: "Fácil", explanation: "A velocidade da luz no vácuo é de 300.000 km/s." },
+        { question: "Quem foi o primeiro presidente do Brasil?", options: ["Juscelino Kubitschek", "Getúlio Vargas", "Dom Pedro II", "Deodoro da Fonseca"], correct: 3, subject: "História", difficulty: "Fácil", explanation: "O primeiro presidente do Brasil foi Deodoro da Fonseca." },
+        { question: "O que é mitose?", options: ["Reprodução dos gametas", "Fusão de duas células", "Divisão celular que gera duas células idênticas", "Formação de proteínas"], correct: 2, subject: "Biologia", difficulty: "Médio", explanation: "Mitose é a divisão celular que gera duas células idênticas." },
+        { question: "Quanto é 2³?", options: ["6", "8", "4", "9"], correct: 1, subject: "Matemática", difficulty: "Fácil", explanation: "2³ é igual a 8." },
+        { question: "Qual é a capital da Austrália?", options: ["Sydney", "Melbourne", "Brisbane", "Camberra"], correct: 3, subject: "Geografia", difficulty: "Fácil", explanation: "A capital da Austrália é Camberra." },
+        { question: "O que é um átomo?", options: ["Um tipo de célula", "Unidade mínima da matéria", "Uma partícula elétrica", "Uma proteína"], correct: 1, subject: "Química", difficulty: "Fácil", explanation: "Um átomo é a unidade mínima da matéria." },
+        { question: "Qual continente tem mais países?", options: ["América", "Europa", "África", "Ásia"], correct: 2, subject: "Geografia", difficulty: "Médio", explanation: "A África é o continente com mais países." },
+        { question: "O que é hipérbole?", options: ["Comparação", "Repetição de sons", "Exagero intencional", "Personificação"], correct: 2, subject: "Literatura", difficulty: "Médio", explanation: "Hipérbole é um exagero intencional." },
+        { question: "Função dos ribossomos nas células:", options: ["Armazenamento de energia", "Respiração celular", "Produção de proteínas", "Transporte de nutrientes"], correct: 2, subject: "Biologia", difficulty: "Médio", explanation: "Os ribossomos são responsáveis pela produção de proteínas." },
+        { question: "Valor aproximado de π (pi):", options: ["3,14", "2,71", "1,62", "4,13"], correct: 0, subject: "Matemática", difficulty: "Fácil", explanation: "O valor aproximado de π é 3,14." },
+        { question: "Autor de 'Dom Casmurro':", options: ["José de Alencar", "Machado de Assis", "Manuel Bandeira", "Carlos Drummond de Andrade"], correct: 1, subject: "Literatura", difficulty: "Médio", explanation: "'Dom Casmurro' foi escrito por Machado de Assis." },
+        { question: "Diferença entre clima e tempo:", options: ["Clima é mais quente que o tempo", "Tempo é a média do clima", "Tempo é momentâneo; clima é a média ao longo dos anos", "São sinônimos"], correct: 2, subject: "Geografia", difficulty: "Médio", explanation: "Tempo é momentâneo; clima é a média ao longo dos anos." },
+        { question: "Número de cromossomos em uma célula humana:", options: ["23", "92", "48", "46"], correct: 3, subject: "Biologia", difficulty: "Médio", explanation: "Uma célula humana possui 46 cromossomos." },
+        { question: "O que é um verbo?", options: ["Palavra que nomeia objetos", "Palavra que expressa ação, estado ou fenômeno", "Palavra que substitui nomes", "Palavra que indica lugar"], correct: 1, subject: "Português", difficulty: "Fácil", explanation: "Um verbo expressa ação, estado ou fenômeno." },
+        { question: "Qual planeta é conhecido como 'Planeta Vermelho'?", options: ["Marte", "Mercúrio", "Vênus", "Saturno"], correct: 0, subject: "Astronomia", difficulty: "Fácil", explanation: "Marte é conhecido como o 'Planeta Vermelho'." },
+        { question: "Qual é o processo responsável pela fotossíntese nas plantas?", options: ["Clorofila", "Mitose", "Osmose", "Respiração celular"], correct: 0, subject: "Biologia", difficulty: "Fácil", explanation: "A clorofila é responsável pela fotossíntese nas plantas." }
+    ];
+
+    // ---------------------------------------------------------------
+    // Configurações e utilidades
+    // ---------------------------------------------------------------
+    const TOTAL = 10;
+    const MAX_LIVES = 3;
+    const POINTS = 10;
+    const DIFF_RANK = { 'Fácil': 0, 'Médio': 1, 'Difícil': 2, 'Desafio': 3 };
+    const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    const $ = (id) => document.getElementById(id);
+
+    const ICON_HEART = '<svg class="qz-heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+    const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="qz-draw" d="M5 12l4.5 4.5L19 7"/></svg>';
+    const ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    const ICON_CHECK_PLAIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4.5 4.5L19 7"/></svg>';
+
+    // Elementos
+    const el = {
+        header: $('qz-header'),
+        start: $('qz-start'),
+        quiz: $('qz-quiz'),
+        result: $('qz-result'),
+        card: $('qz-card'),
+        counter: $('qz-counter'),
+        score: $('qz-score'),
+        lives: $('qz-lives'),
+        bar: $('qz-bar'),
+        barFill: $('qz-bar-fill'),
+        subject: $('qz-subject'),
+        diff: $('qz-diff'),
+        question: $('qz-question'),
+        options: $('qz-options'),
+        feedback: $('qz-feedback'),
+        fbIcon: $('qz-fb-icon'),
+        fbTitle: $('qz-fb-title'),
+        fbBody: $('qz-fb-body'),
+        action: $('qz-action'),
+        shareLabel: $('qz-share-label')
+    };
+
+    // Estado do jogo
+    let state = null;
+
+    function newState() {
+        return {
+            queue: buildQueue(),
+            index: 0,
+            lives: MAX_LIVES,
+            score: 0,
+            correct: 0,
+            wrong: 0,
+            answered: 0,
+            selected: null,
+            locked: false,
+            finished: false
+        };
+    }
+
+    // Sorteio Fisher-Yates (não altera a lista original) + ordem de dificuldade crescente
+    function buildQueue() {
+        const pool = questions.slice();
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        return pool
+            .slice(0, TOTAL)
+            .sort((a, b) => (DIFF_RANK[a.difficulty] || 0) - (DIFF_RANK[b.difficulty] || 0));
+    }
+
+    function current() { return state.queue[state.index]; }
+
+    // ---------------------------------------------------------------
+    // Telas
+    // ---------------------------------------------------------------
+    function showScreen(name) {
+        el.header.hidden = name !== 'start';
+        el.start.hidden = name !== 'start';
+        el.quiz.hidden = name !== 'quiz';
+        el.result.hidden = name !== 'result';
+        window.scrollTo(0, 0);
+    }
+
+    function renderLives() {
+        let html = '';
+        for (let i = 0; i < MAX_LIVES; i++) {
+            html += i < state.lives
+                ? ICON_HEART
+                : ICON_HEART.replace('class="qz-heart"', 'class="qz-heart is-lost"');
+        }
+        el.lives.innerHTML = html;
+        el.lives.setAttribute('aria-label', state.lives + (state.lives === 1 ? ' vida restante' : ' vidas restantes'));
+    }
+
+    function updateHud() {
+        el.counter.innerHTML = 'Pergunta ' + (state.index + 1) + ' <span>de ' + TOTAL + '</span>';
+        el.score.textContent = state.score;
+        el.barFill.style.width = (state.answered / TOTAL * 100) + '%';
+        el.bar.setAttribute('aria-valuenow', state.answered);
+        renderLives();
+    }
+
+    // ---------------------------------------------------------------
+    // Fluxo do jogo
+    // ---------------------------------------------------------------
+    function startGame() {
+        state = newState();
+        showScreen('quiz');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = current();
+        state.selected = null;
+        state.locked = false;
+
+        el.subject.textContent = q.subject;
+        el.diff.textContent = q.difficulty;
+        el.question.textContent = q.question;
+        el.feedback.hidden = true;
+
+        el.options.innerHTML = '';
+        q.options.forEach((text, i) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'qz-option';
+            btn.dataset.index = i;
+            btn.setAttribute('role', 'radio');
+            btn.setAttribute('aria-checked', 'false');
+
+            const letter = document.createElement('span');
+            letter.className = 'qz-letter';
+            letter.textContent = LETTERS[i];
+
+            const label = document.createElement('span');
+            label.className = 'qz-opt-text';
+            label.textContent = text;
+
+            const status = document.createElement('span');
+            status.className = 'qz-opt-status';
+            status.setAttribute('aria-hidden', 'true');
+
+            btn.append(letter, label, status);
+            btn.addEventListener('click', () => selectOption(i));
+            el.options.appendChild(btn);
+        });
+
+        el.action.textContent = 'Confirmar resposta';
+        el.action.disabled = true;
+
+        el.card.classList.remove('qz-fade');
+        void el.card.offsetWidth; // reinicia a animação curta de entrada
+        el.card.classList.add('qz-fade');
+
+        updateHud();
+        window.scrollTo(0, 0);
+        el.question.focus({ preventScroll: true });
+    }
+
+    function selectOption(i) {
+        if (state.locked) return;
+        state.selected = i;
+        Array.from(el.options.children).forEach((btn, idx) => {
+            const on = idx === i;
+            btn.classList.toggle('is-selected', on);
+            btn.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+        el.action.disabled = false;
+    }
+
+    function confirmAnswer() {
+        if (state.locked || state.selected === null) return;
+        state.locked = true;
+
+        const q = current();
+        const ok = state.selected === q.correct;
+
+        state.answered++;
+        if (ok) {
+            state.correct++;
+            state.score += POINTS;
+        } else {
+            state.wrong++;
+            state.lives--;
+        }
+
+        // Marca as alternativas
+        Array.from(el.options.children).forEach((btn, idx) => {
+            btn.disabled = true;
+            btn.classList.remove('is-selected');
+            const status = btn.querySelector('.qz-opt-status');
+            if (idx === q.correct) {
+                btn.classList.add('is-correct');
+                status.innerHTML = ICON_CHECK_PLAIN;
+            } else if (idx === state.selected) {
+                btn.classList.add('is-wrong');
+                status.innerHTML = ICON_X;
+            } else {
+                btn.classList.add('is-dim');
+            }
+        });
+
+        // Feedback
+        el.feedback.className = 'qz-feedback ' + (ok ? 'is-correct' : 'is-wrong');
+        el.fbIcon.innerHTML = ok ? ICON_CHECK : ICON_X;
+        el.fbTitle.textContent = ok ? '✓ CORRETO!' : '✕ INCORRETO';
+
+        el.fbBody.innerHTML = '';
+        if (!ok) {
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = q.options[q.correct];
+            p.append('Resposta correta: ', strong);
+            el.fbBody.appendChild(p);
+        }
+        if (q.explanation) {
+            const p = document.createElement('p');
+            p.textContent = q.explanation;
+            el.fbBody.appendChild(p);
+        }
+        if (!ok) {
+            const note = document.createElement('p');
+            note.className = 'qz-fb-note';
+            note.textContent = state.lives > 0 ? 'Você perdeu uma vida.' : 'Suas vidas acabaram.';
+            el.fbBody.appendChild(note);
+        }
+        el.feedback.hidden = false;
+
+        updateHud();
+
+        const isLast = state.lives <= 0 || state.index + 1 >= TOTAL;
+        el.action.textContent = isLast ? 'Ver resultado' : 'Próxima pergunta';
+        el.action.disabled = false;
+
+        // Garante que o feedback e o botão fiquem visíveis no celular
+        el.feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function nextStep() {
+        if (!state.locked) return;
+        if (state.lives <= 0 || state.index + 1 >= TOTAL) {
+            finishGame();
+        } else {
+            state.index++;
+            renderQuestion();
+        }
+    }
+
+    function handleAction() {
+        if (state.locked) nextStep();
+        else confirmAnswer();
+    }
+
+    // ---------------------------------------------------------------
+    // Resultado
+    // ---------------------------------------------------------------
+    function classify(pct) {
+        if (pct >= 90) return { tier: 'high', name: 'Mestre do Saber', msg: 'Desempenho excepcional! Você domina o conteúdo.' };
+        if (pct >= 70) return { tier: 'high', name: 'Muito bom', msg: 'Ótimo resultado! Só mais um pouco para chegar ao topo.' };
+        if (pct >= 50) return { tier: 'mid', name: 'Bom caminho', msg: 'Você está indo bem. Jogue de novo para melhorar.' };
+        return { tier: 'low', name: 'Continue praticando', msg: 'Vale revisar as explicações e tentar novamente.' };
+    }
+
+    function finishGame() {
+        state.finished = true;
+        const pct = Math.round(state.correct / TOTAL * 100);
+        const lostAll = state.lives <= 0 && state.answered < TOTAL;
+        const c = classify(pct);
+
+        $('qz-eyebrow').textContent = lostAll ? 'Fim de jogo' : 'Quiz concluído';
+        $('qz-pct').textContent = pct + '%';
+        $('qz-hero').textContent = state.correct + '/' + TOTAL + ' acertos';
+        $('qz-rank').textContent = c.name;
+        $('qz-rank').className = 'qz-rank' + (c.tier === 'mid' ? ' is-mid' : c.tier === 'low' ? ' is-low' : '');
+        $('qz-rank-msg').textContent = lostAll
+            ? 'Suas vidas acabaram na pergunta ' + state.answered + ' de ' + TOTAL + '. ' + c.msg
+            : c.msg;
+        $('qz-r-score').textContent = state.score;
+        $('qz-r-correct').textContent = state.correct;
+        $('qz-r-wrong').textContent = state.wrong;
+
+        const ring = $('qz-ring');
+        ring.className = 'qz-ring' + (c.tier === 'mid' ? ' is-mid' : c.tier === 'low' ? ' is-low' : '');
+        const fg = $('qz-ring-fg');
+        fg.style.strokeDashoffset = 100;
+
+        showScreen('result');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            fg.style.strokeDashoffset = 100 - pct;
+        }));
+    }
+
+    // ---------------------------------------------------------------
+    // Compartilhar / voltar
+    // ---------------------------------------------------------------
+    function shareResult() {
+        const text = state.correct === TOTAL
+            ? '🥇 Venci o Desafio do Saber! Acertei todas as ' + TOTAL + ' perguntas.'
+            : '🎮 Joguei o Desafio do Saber e fiz ' + state.correct + '/' + TOTAL + ' acertos. Tente você também!';
+
+        const flash = (msg) => {
+            el.shareLabel.textContent = msg;
+            setTimeout(() => { el.shareLabel.textContent = 'Compartilhar'; }, 2200);
+        };
+
+        if (navigator.share) {
+            navigator.share({ title: 'Desafio do Saber', text: text, url: window.location.href })
+                .catch(() => { /* usuário cancelou */ });
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text + '\n' + window.location.href)
+                .then(() => flash('Copiado!'))
+                .catch(() => flash('Não foi possível copiar'));
+        } else {
+            window.prompt('Copie o texto abaixo:', text + '\n' + window.location.href);
+        }
+    }
+
+    function goBack() { window.history.back(); }
+
+    // ---------------------------------------------------------------
+    // Eventos
+    // ---------------------------------------------------------------
+    $('qz-start-btn').addEventListener('click', startGame);
+    $('qz-again-btn').addEventListener('click', startGame);
+    $('qz-share-btn').addEventListener('click', shareResult);
+    $('qz-leave-btn').addEventListener('click', goBack);
+    $('qz-back').addEventListener('click', goBack);
+    el.action.addEventListener('click', handleAction);
+
+    // Atalhos de teclado: 1-4 / A-D escolhem, Enter confirma e avança
+    document.addEventListener('keydown', (e) => {
+        if (!state || el.quiz.hidden || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+
+        if (!state.locked) {
+            const k = e.key.toLowerCase();
+            let idx = -1;
+            if (/^[1-9]$/.test(k)) idx = parseInt(k, 10) - 1;
+            else if (/^[a-f]$/.test(k)) idx = k.charCodeAt(0) - 97;
+            if (idx >= 0 && idx < current().options.length) {
+                selectOption(idx);
+                return;
+            }
+        }
+
+        if (e.key === 'Enter') {
+            const a = document.activeElement;
+            if (a === el.action) return; // o próprio botão trata o clique
+            if (a && a.classList && a.classList.contains('qz-option')
+                && Number(a.dataset.index) !== state.selected) return; // deixa o Enter selecionar
+            e.preventDefault();
+            handleAction();
+        }
+    });
+})();
+    </script>
+</body>
+</html>

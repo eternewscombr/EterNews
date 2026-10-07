@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Eter News</title>
+
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <!-- Page Icon -->
+    <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon para modo claro (ícone escuro) -->
+    <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)" />
+    <!-- Favicon para modo escuro (ícone claro) -->
+    <link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        :root {
+            --bg: #000;
+            --panel: #14161a;
+            --panel-2: #1c1f24;
+            --line: #2b2f36;
+            --text: #f4f5f7;
+            --muted: #9aa0a8;
+            --gray: #7A7A7A;
+            --ok: #4CAF50;
+            --bad: #F44336;
+            --accent: #FFC247;
+        }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: calc(env(safe-area-inset-top, 0px) + 20px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Botão de voltar */
+        .back-btn {
+            position: fixed;
+            top: calc(env(safe-area-inset-top, 0px) + 10px);
+            left: 10px;
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            background: none;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.9rem;
+            line-height: 1;
+            color: #fff;
+            z-index: 1000;
+        }
+        .back-btn:hover { background: rgba(255,255,255,.1); }
+
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+        header { text-align: center; margin: 28px 0 22px; padding: 0 28px; }
+        h1 { font-size: clamp(1.5rem, 6vw, 2.4rem); font-weight: 700; margin: 0 0 6px; letter-spacing: .01em; }
+        header p { margin: 0; color: var(--muted); font-size: clamp(.85rem, 3.4vw, 1rem); }
+
+        main { width: 100%; max-width: 680px; }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: clamp(14px, 4vw, 28px);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(14px, 3vw, 20px);
+        }
+
+        /* Dica */
+        .clue { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .clue-title { font-size: .85rem; font-weight: 600; color: var(--accent); }
+        #hint { margin: 2px 0 0; font-size: clamp(.95rem, 3.6vw, 1.1rem); line-height: 1.45; }
+        .subject-badge {
+            flex: none;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 600;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            white-space: nowrap;
+        }
+
+        /* Desenho */
+        .stage {
+            background: var(--panel-2);
+            border-radius: 16px;
+            padding: 14px 14px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .hangman { width: 100%; max-width: 210px; height: auto; max-height: 34vh; display: block; }
+        .hangman .frame { stroke: var(--gray); stroke-width: 6; stroke-linecap: round; fill: none; }
+        .hangman .part { stroke: var(--text); stroke-width: 5; stroke-linecap: round; fill: none; opacity: 0; transition: opacity .25s, stroke .25s; }
+        .hangman .part.on { opacity: 1; }
+        .hangman.lost .part { stroke: var(--bad); }
+
+        .status-row { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; }
+        .errors { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: .95rem; }
+        .pips { display: flex; gap: 5px; }
+        .pip { width: 10px; height: 10px; border-radius: 50%; background: var(--line); transition: background .2s; }
+        .pip.on { background: var(--bad); }
+        .wrong-list { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .85rem; color: var(--muted); min-height: 26px; }
+        .wrong-chip { background: rgba(244,67,54,.15); color: #ff8a80; border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+
+        /* Palavra (área própria, nunca sobreposta ao desenho) */
+        .word-area { padding: 6px 0; }
+        .word-wrap { container-type: inline-size; width: 100%; }
+        .word { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 6px; }
+        .letter-box {
+            --w: clamp(24px, calc((100cqw - (var(--n) - 1) * 6px) / var(--n)), 48px);
+            width: var(--w);
+            height: calc(var(--w) * 1.25);
+            font-size: calc(var(--w) * .72);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            font-weight: 700;
+            line-height: 1.1;
+            border-bottom: 3px solid var(--gray);
+            transition: border-color .2s;
+        }
+        .letter-box.revealed { border-color: var(--ok); animation: pop .25s ease-out; }
+        .letter-box.missed { border-color: var(--bad); color: #ff8a80; }
+        .letter-box.fixed { border-color: transparent; }
+        .letter-box.gap { border-color: transparent; width: calc(var(--w) * .5); }
+        @keyframes pop { from { transform: translateY(-6px); opacity: .4; } to { transform: none; opacity: 1; } }
+
+        #message { min-height: 1.6em; text-align: center; font-size: clamp(1rem, 4vw, 1.2rem); font-weight: 700; }
+
+        /* Teclado */
+        .keyboard { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        @media (min-width: 480px) { .keyboard { grid-template-columns: repeat(9, 1fr); } }
+        @media (min-width: 720px) { .keyboard { grid-template-columns: repeat(13, 1fr); } }
+        .keyboard-letter {
+            aspect-ratio: 1;
+            min-height: 36px;
+            font: inherit;
+            font-weight: 700;
+            font-size: clamp(.9rem, 3.6vw, 1.05rem);
+            background: var(--gray);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background .15s, transform .1s;
+        }
+        .keyboard-letter:hover:not(:disabled) { background: #C0C0C0; color: #000; }
+        .keyboard-letter:active:not(:disabled) { transform: scale(.94); }
+        .keyboard-letter:disabled { cursor: not-allowed; background: #2a2d33; color: #666; }
+        .keyboard-letter.correct:disabled { background: var(--ok); color: #fff; }
+        .keyboard-letter.wrong:disabled { background: var(--bad); color: #fff; opacity: .55; text-decoration: line-through; }
+
+        .btn {
+            font: inherit; font-weight: 600; cursor: pointer;
+            border: none; border-radius: 12px; padding: 12px 28px;
+            background: #3a3d44; color: #fff; transition: background .15s;
+        }
+        .btn:hover { background: #4a4e56; }
+        .btn.primary { background: var(--accent); color: #111; }
+        .btn.primary:hover { background: #ffd070; }
+        .btn.ghost { background: transparent; color: var(--muted); }
+        .actions { display: flex; justify-content: center; }
+
+        footer { text-align: center; color: #6b7078; margin-top: 24px; font-size: .85rem; padding: 0 12px; }
+
+        /* Tela de vitória / derrota */
+        .overlay {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,.78);
+            display: grid; place-items: center; padding: 16px;
+        }
+        .overlay[hidden] { display: none; }
+        .dialog {
+            width: 100%; max-width: 380px;
+            background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
+            padding: 28px 22px 22px; text-align: center;
+            animation: pop .3s ease-out;
+        }
+        .dialog .icon { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; display: grid; place-items: center; font-size: 2rem; font-weight: 700; }
+        .dialog.win .icon { background: rgba(76,175,80,.18); color: var(--ok); }
+        .dialog.lose .icon { background: rgba(244,67,54,.18); color: var(--bad); }
+        .dialog h2 { margin: 0 0 8px; font-size: 1.4rem; }
+        .dialog p { margin: 0 0 4px; color: var(--muted); }
+        .dialog .answer { display: block; font-size: clamp(1.4rem, 7vw, 2rem); font-weight: 700; color: var(--text); margin: 4px 0 20px; overflow-wrap: anywhere; }
+        .dialog .btns { display: flex; flex-direction: column; gap: 8px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão de seta para voltar à página anterior -->
+    <button class="back-btn" onclick="window.history.back()" aria-label="Voltar">&#8592;</button>
+
+    <header>
+        <h1>FORCA EDUCACIONAL</h1>
+        <p>Aprenda conteúdos do ensino médio de forma divertida!</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="clue">
+                <div>
+                    <span class="clue-title">Dica</span>
+                    <p id="hint">Clique em "Nova Palavra" para começar</p>
+                </div>
+                <span id="subject" class="subject-badge">?</span>
+            </div>
+
+            <!-- 1. Desenho -->
+            <div class="stage">
+                <svg id="hangman" class="hangman" viewBox="0 0 200 240" role="img" aria-label="Desenho da forca">
+                    <g class="frame">
+                        <line x1="20" y1="222" x2="180" y2="222"/>
+                        <line x1="50" y1="222" x2="50" y2="20"/>
+                        <line x1="50" y1="20" x2="140" y2="20"/>
+                        <line x1="50" y1="58" x2="88" y2="20"/>
+                        <line x1="140" y1="20" x2="140" y2="48"/>
+                    </g>
+                    <circle class="part" cx="140" cy="68" r="20"/>
+                    <line class="part" x1="140" y1="88" x2="140" y2="152"/>
+                    <line class="part" x1="140" y1="104" x2="114" y2="132"/>
+                    <line class="part" x1="140" y1="104" x2="166" y2="132"/>
+                    <line class="part" x1="140" y1="152" x2="118" y2="194"/>
+                    <line class="part" x1="140" y1="152" x2="162" y2="194"/>
+                </svg>
+                <div class="status-row">
+                    <div class="errors">
+                        <span>Erros: <span id="mistakes">0</span>/6</span>
+                        <span class="pips" id="pips" aria-hidden="true"></span>
+                    </div>
+                    <div class="wrong-list" id="wrong-list" aria-live="polite"></div>
+                </div>
+            </div>
+
+            <!-- 2. Palavra -->
+            <div class="word-area">
+                <div class="word-wrap">
+                    <div id="word-display" class="word" role="group"></div>
+                </div>
+            </div>
+
+            <div id="message" role="status" aria-live="polite"></div>
+
+            <!-- 3. Letras -->
+            <div class="keyboard" role="group" aria-label="Teclado de letras"></div>
+
+            <div class="actions">
+                <button id="new-word-btn" class="btn">Nova Palavra</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Jogo da Forca Educacional - Conteúdos do Ensino Médio</p>
+    </footer>
+
+    <!-- Tela de vitória / derrota -->
+    <div id="overlay" class="overlay" hidden>
+        <div id="dialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+            <div class="icon" id="dialog-icon" aria-hidden="true"></div>
+            <h2 id="dialog-title"></h2>
+            <p>A palavra era</p>
+            <span class="answer" id="dialog-word"></span>
+            <div class="btns">
+                <button id="play-again-btn" class="btn primary">Jogar novamente</button>
+                <button id="close-dialog-btn" class="btn ghost">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game data
+        const words = [
+            { word: "MITOSE", hint: "Processo biológico de divisão celular que resulta em duas células-filhas idênticas.", subject: "Biologia" },
+            { word: "FEUDALISMO", hint: "Sistema político da Idade Média baseado em relações de vassalagem.", subject: "História" },
+            { word: "VERBO", hint: "Classe gramatical que indica ação, estado ou fenômeno da natureza.", subject: "Português" },
+            { word: "ATRITO", hint: "Força que se opõe ao movimento relativo entre duas superfícies em contato.", subject: "Física" },
+            { word: "ÁTOMO", hint: "Partícula fundamental da matéria, composta por prótons, nêutrons e elétrons.", subject: "Química" },
+            { word: "PLANÍCIE", hint: "Tipo de relevo formado por erosão, com superfície plana e baixa altitude.", subject: "Geografia" },
+            { word: "LIVRO", hint: "Tradução da palavra inglesa 'book'.", subject: "Inglês" },
+            { word: "FUNÇÃO", hint: "Relação matemática entre conjuntos que associa cada elemento de um conjunto a exatamente um elemento de outro.", subject: "Matemática" },
+            { word: "DNA", hint: "Ácido nucleico que contém as instruções genéticas dos seres vivos.", subject: "Biologia" },
+            { word: "REPÚBLICA", hint: "Forma de governo em que o poder emana do povo, exercido por representantes eleitos.", subject: "História" },
+            { word: "METÁFORA", hint: "Figura de linguagem que estabelece uma comparação implícita entre dois elementos.", subject: "Português" },
+            { word: "VELOCIDADE", hint: "Grandeza física que mede a taxa de variação da posição de um corpo em função do tempo.", subject: "Física" },
+            { word: "MOL", hint: "Unidade de medida de quantidade de substância no Sistema Internacional.", subject: "Química" },
+            { word: "URBANIZAÇÃO", hint: "Processo de crescimento das cidades em relação às áreas rurais.", subject: "Geografia" },
+            { word: "GRAMMAR", hint: "Palavra em inglês que significa 'gramática'.", subject: "Inglês" },
+            { word: "LOGARITMO", hint: "Operação matemática que determina o expoente necessário para produzir um dado número.", subject: "Matemática" }
+        ];
+
+        // <logic>
+        // Normalização usada SÓ na comparação: Á/À/Â/Ã→A, É/Ê→E, Í→I, Ó/Ô/Õ→O, Ú→U, Ç→C.
+        // A palavra exibida na tela continua com os acentos originais.
+        function normalizeLetter(ch) {
+            return String(ch).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+        }
+        function isGuessable(ch) {
+            return /^[A-Z]$/.test(normalizeLetter(ch));
+        }
+        function isRevealed(ch, guessed) {
+            return !isGuessable(ch) || guessed.has(normalizeLetter(ch));
+        }
+        function wordHasLetter(word, baseLetter) {
+            return [...word].some(ch => normalizeLetter(ch) === baseLetter);
+        }
+        function isWon(word, guessed) {
+            return [...word].every(ch => isRevealed(ch, guessed));
+        }
+        // </logic>
+
+        // Game variables
+        let selectedWord = "";
+        let selectedHint = "";
+        let selectedSubject = "";
+        let guessedLetters = new Set();
+        let wrongLetters = [];
+        let mistakes = 0;
+        let gameOver = false;
+        let lastIndex = -1;
+        let dialogTimer = null;
+        const maxMistakes = 6;
+
+        // DOM elements
+        const wordDisplay = document.getElementById('word-display');
+        const hintElement = document.getElementById('hint');
+        const subjectElement = document.getElementById('subject');
+        const mistakesElement = document.getElementById('mistakes');
+        const messageElement = document.getElementById('message');
+        const newWordBtn = document.getElementById('new-word-btn');
+        const keyboardElement = document.querySelector('.keyboard');
+        const hangmanSvg = document.getElementById('hangman');
+        const hangmanParts = document.querySelectorAll('#hangman .part');
+        const pipsElement = document.getElementById('pips');
+        const wrongListElement = document.getElementById('wrong-list');
+        const overlay = document.getElementById('overlay');
+        const dialog = document.getElementById('dialog');
+
+        pipsElement.innerHTML = '<span class="pip"></span>'.repeat(maxMistakes);
+
+        // Initialize the game
+        function initGame() {
+            clearTimeout(dialogTimer);
+            hideDialog();
+
+            guessedLetters = new Set();
+            wrongLetters = [];
+            mistakes = 0;
+            gameOver = false;
+            messageElement.textContent = '';
+            messageElement.style.color = '#fff';
+            mistakesElement.textContent = mistakes;
+
+            // Select a random word (sem repetir a anterior)
+            let randomIndex;
+            do { randomIndex = Math.floor(Math.random() * words.length); }
+            while (words.length > 1 && randomIndex === lastIndex);
+            lastIndex = randomIndex;
+            selectedWord = words[randomIndex].word;
+            selectedHint = words[randomIndex].hint;
+            selectedSubject = words[randomIndex].subject;
+
+            hintElement.textContent = selectedHint;
+            subjectElement.textContent = selectedSubject;
+
+            // Create letter placeholders
+            const chars = [...selectedWord];
+            wordDisplay.innerHTML = '';
+            wordDisplay.style.setProperty('--n', chars.length);
+            chars.forEach((ch, i) => {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                box.id = `letter-${i}`;
+                if (ch === ' ') box.classList.add('gap');
+                else if (!isGuessable(ch)) { box.classList.add('fixed'); box.textContent = ch; }
+                wordDisplay.appendChild(box);
+            });
+            wordDisplay.setAttribute('aria-label', `Palavra com ${chars.length} letras`);
+
+            // Reset hangman drawing
+            hangmanSvg.classList.remove('lost');
+            hangmanParts.forEach(part => part.classList.remove('on'));
+            document.querySelectorAll('.pip').forEach(p => p.classList.remove('on'));
+            renderWrongLetters();
+
+            generateKeyboard();
+        }
+
+        // Generate keyboard buttons
+        function generateKeyboard() {
+            keyboardElement.innerHTML = '';
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'keyboard-letter';
+                button.textContent = letter;
+                button.id = `key-${letter}`;
+                button.addEventListener('click', () => handleGuess(letter));
+                keyboardElement.appendChild(button);
+            });
+        }
+
+        // Handle letter guess (aceita letra com ou sem acento)
+        function handleGuess(input) {
+            const letter = normalizeLetter(input);
+            if (gameOver || !/^[A-Z]$/.test(letter) || guessedLetters.has(letter)) return;
+
+            guessedLetters.add(letter);
+            const button = document.getElementById(`key-${letter}`);
+            button.disabled = true;
+
+            if (wordHasLetter(selectedWord, letter)) {
+                button.classList.add('correct');
+                updateWordDisplay();
+
+                if (isWon(selectedWord, guessedLetters)) {
+                    gameOver = true;
+                    messageElement.textContent = 'Parabéns! Você acertou!';
+                    messageElement.style.color = '#4CAF50';
+                    disableKeyboard();
+                    showDialog(true);
+                }
+            } else {
+                button.classList.add('wrong');
+                wrongLetters.push(letter);
+                mistakes++;
+                mistakesElement.textContent = mistakes;
+                renderWrongLetters();
+                updateHangman();
+
+                if (mistakes >= maxMistakes) {
+                    gameOver = true;
+                    messageElement.textContent = `Game Over! A palavra era: ${selectedWord}`;
+                    messageElement.style.color = '#F44336';
+                    hangmanSvg.classList.add('lost');
+                    revealWord();
+                    disableKeyboard();
+                    showDialog(false);
+                }
+            }
+        }
+
+        // Update word display with guessed letters
+        function updateWordDisplay() {
+            [...selectedWord].forEach((ch, i) => {
+                const box = document.getElementById(`letter-${i}`);
+                if (isGuessable(ch) && guessedLetters.has(normalizeLetter(ch)) && !box.classList.contains('revealed')) {
+                    box.textContent = ch; // mantém o acento original
+                    box.classList.add('revealed');
+                }
+            });
+        }
+
+        // Reveal the entire word (when player loses)
+        function revealWord() {
+            [...selectedWord].forEach((ch, i) => {
+                const box = document.getElementById(`letter-${i}`);
+                if (isGuessable(ch) && !box.classList.contains('revealed')) {
+                    box.textContent = ch;
+                    box.classList.add('missed');
+                }
+            });
+        }
+
+        function renderWrongLetters() {
+            wrongListElement.innerHTML = wrongLetters.length
+                ? 'Letras erradas: ' + wrongLetters.map(l => `<span class="wrong-chip">${l}</span>`).join('')
+                : 'Nenhuma letra errada';
+        }
+
+        // Update hangman drawing based on mistakes
+        function updateHangman() {
+            hangmanParts.forEach((part, i) => part.classList.toggle('on', i < mistakes));
+            document.querySelectorAll('.pip').forEach((p, i) => p.classList.toggle('on', i < mistakes));
+        }
+
+        // Disable all keyboard buttons
+        function disableKeyboard() {
+            document.querySelectorAll('.keyboard-letter').forEach(b => { b.disabled = true; });
+        }
+
+        // Tela de vitória / derrota
+        function showDialog(won) {
+            dialogTimer = setTimeout(() => {
+                dialog.className = 'dialog ' + (won ? 'win' : 'lose');
+                document.getElementById('dialog-icon').textContent = won ? '✓' : '✕';
+                document.getElementById('dialog-title').textContent = won ? 'Parabéns! Você acertou!' : 'Game Over!';
+                document.getElementById('dialog-word').textContent = selectedWord;
+                overlay.hidden = false;
+                document.getElementById('play-again-btn').focus();
+            }, 700);
+        }
+        function hideDialog() { overlay.hidden = true; }
+        function closeDialog() { hideDialog(); newWordBtn.focus(); }
+
+        // Event listeners
+        newWordBtn.addEventListener('click', initGame);
+        document.getElementById('play-again-btn').addEventListener('click', initGame);
+        document.getElementById('close-dialog-btn').addEventListener('click', closeDialog);
+        overlay.addEventListener('click', e => { if (e.target === overlay) closeDialog(); });
+
+        // Teclado físico (com ou sem acento)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !overlay.hidden) { closeDialog(); return; }
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.key === 'Enter' && gameOver && e.target.tagName !== 'BUTTON') { initGame(); return; }
+            if (e.key.length === 1 && isGuessable(e.key)) handleGuess(e.key);
+        });
+
+        // Initialize game on page load
+        initGame();
+    </script>
+</body>
+</html>

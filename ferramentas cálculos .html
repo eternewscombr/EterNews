@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ferramentas FAETEC - Eter News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)"><link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#000000">
+<style>
+:root{--g:#f0b429;--c:#121212;--c2:#1c1c1c;--b:#2c2c2c;--t:#eee;--m:#999}
+*{box-sizing:border-box}body{margin:0;background:#000;color:var(--t);font:15px Inter,sans-serif}
+header{padding:18px 16px 18px 64px;border-bottom:2px solid var(--g)}h1{margin:0;font-size:1.35rem}h1 span{color:var(--g)}h2{margin:12px 0}
+#bk{position:fixed;top:12px;left:14px;background:none;border:0;color:#fff;font-size:1.9rem;cursor:pointer;z-index:9}
+main{max-width:1000px;margin:auto;padding:16px}.m{color:var(--m)}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.btn{background:var(--c2);color:var(--t);border:1px solid var(--b);padding:10px 14px;border-radius:10px;cursor:pointer;font:inherit;transition:.15s}.btn:hover{border-color:var(--g)}.btn:active{transform:scale(.97)}.btn.on,.btn.p{background:var(--g);color:#000;font-weight:700;border-color:var(--g)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:16px;cursor:pointer;transition:.2s}.card:hover{border-color:var(--g);transform:translateY(-3px)}.card i{font-style:normal;font-size:1.7rem}.card b{display:block;margin:6px 0 2px}.card small{color:var(--m)}
+.cat{color:var(--g);margin:22px 0 8px}
+.panel{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:16px}
+label{display:block;margin:8px 0;color:var(--m);font-size:.85rem}
+input,select,textarea{background:var(--c2);color:var(--t);border:1px solid var(--b);border-radius:8px;padding:10px;font:inherit;width:100%;margin-top:4px}textarea{font-family:ui-monospace,monospace}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.keys .btn{padding:12px 4px}
+.res{background:var(--c2);border-radius:8px;padding:10px;margin-top:8px;font-weight:600;overflow-wrap:anywhere}
+table{border-collapse:collapse;margin:6px 0;font-size:.88rem}td,th{border:1px solid var(--b);padding:5px 10px;text-align:left}th{background:var(--c2);color:var(--g)}
+pre{background:var(--c2);padding:10px;border-radius:8px;overflow:auto;color:#9be}
+.tn{color:var(--g);font-size:.75rem;font-weight:700;margin-top:10px;letter-spacing:.05em}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}.opt.ok{background:#14532d;border-color:#22c55e}.opt.no{background:#7f1d1d;border-color:#ef4444}.ok2{color:#4ade80}.bad{color:#f87171}
+.qh{display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;color:var(--m);margin-bottom:10px;font-size:.85rem}.big{font-size:2.2rem;font-weight:800;color:var(--g)}
+canvas{max-width:100%}
+</style></head><body>
+<button id="bk" onclick="history.back()" aria-label="Voltar">&#8592;</button>
+<header><h1>🛠️ Ferramentas <span>FAETEC</span> <small class="m" style="font-weight:400">· Central de Ferramentas e Desafios</small></h1></header>
+<main id="app"></main>
+<script>
+const $=i=>document.getElementById(i),v=i=>parseFloat($(i).value);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>typeof n!='number'||!isFinite(n)?'Erro':String(+n.toPrecision(12));
+const fp=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:2}),r$=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),fm=x=>typeof x=='number'?fp(x):x;
+const ls=(k,d)=>{try{return localStorage.getItem(k)??d}catch(e){return d}},ss=(k,x)=>{try{localStorage.setItem(k,x)}catch(e){}};
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pk=a=>a[R(0,a.length-1)],sh=a=>[...a].sort(()=>Math.random()-.5);
+
+/* ===== Avaliador seguro de expressões (sem eval) ===== */
+const F={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,sqrt:Math.sqrt,cbrt:Math.cbrt,log:Math.log10,ln:Math.log,abs:Math.abs,exp:Math.exp};
+let DEG=false;
+function ev(s,vr={}){
+ s=s.toLowerCase().replace(/²/g,'^2').replace(/³/g,'^3').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/\s+/g,'').replace(/^y=/,'');
+ const T=s.match(/(?:\d*\.)?\d+(?:e[+-]?\d+)?|[a-z]+|[-+*/^()%!]/g)||[];
+ if(T.join('')!==s)throw Error('x');
+ let i=0;const pe=()=>T[i],nx=()=>T[i++],isv=t=>t&&/^[\d.a-z(]/.test(t);
+ function E(){let a=M();while(pe()=='+'||pe()=='-'){const o=nx(),b=M();a=o=='+'?a+b:a-b}return a}
+ function M(){let a=U();for(;;){const t=pe();if(t=='*'||t=='/'){nx();const b=U();a=t=='*'?a*b:a/b}else if(isv(t))a*=U();else return a}}
+ function U(){if(pe()=='-'){nx();return-U()}if(pe()=='+'){nx();return U()}let a=P();if(pe()=='^'){nx();a=Math.pow(a,U())}return a}
+ function P(){const t=nx();let a;if(t==undefined)throw Error('x');
+  if(t=='('){a=E();if(nx()!=')')throw Error('x')}
+  else if(/^[\d.]/.test(t))a=parseFloat(t);
+  else if(F[t]){if(nx()!='(')throw Error('x');const x=E();if(nx()!=')')throw Error('x');const tr=t=='sin'||t=='cos'||t=='tan';a=F[t](tr&&DEG?x*Math.PI/180:x);if(t.length==4&&t[0]=='a'&&DEG)a=a*180/Math.PI}
+  else if(t=='pi')a=Math.PI;else if(t=='e')a=Math.E;else if(t in vr)a=vr[t];else throw Error('x');
+  while(pe()=='%'||pe()=='!'){if(nx()=='%')a/=100;else{let f=1;for(let k=2;k<=a;k++)f*=k;a=f}}
+  return a}
+ const r=E();if(i<T.length)throw Error('x');return r}
+
+/* ===== Calculadoras ===== */
+const H={b:[],s:[]};
+function calcP(sci){const id=sci?'s':'b',K=sci?['sin(','cos(','tan(','^','asin(','acos(','atan(','sqrt(','log(','ln(','π','e','(',')','!','DEG']:[],
+ B=['C','⌫','%','÷','7','8','9','×','4','5','6','-','1','2','3','+','0','.','00','='];
+ return `<div class=two><div><input id=${id}d placeholder="0" onkeydown="if(event.key=='Enter')kp('${id}','=')"><div class=keys>${[...K,...B].map(k=>`<button class="btn ${k=='='?'p':''}" onclick="kp('${id}','${k}',this)">${k=='DEG'?'RAD':k}</button>`).join('')}</div></div><div><b>Histórico</b><div id=${id}h class=res style="font-weight:400;max-height:340px;overflow:auto">Nenhum cálculo ainda.</div></div></div>`}
+function kp(id,k,b){const d=$(id+'d');
+ if(k=='DEG'){DEG=!DEG;b.textContent=DEG?'DEG':'RAD';return}
+ if(k=='C')d.value='';else if(k=='⌫')d.value=d.value.slice(0,-1);
+ else if(k=='='){try{const r=fmt(ev(d.value));if(r=='Erro')throw 1;H[id].unshift(esc(d.value)+' = <b>'+r+'</b>');$(id+'h').innerHTML=H[id].map(x=>`<div style="padding:4px 0;border-bottom:1px solid var(--b)">${x}</div>`).join('');d.value=r}catch(e){d.value='Erro'}}
+ else{if(d.value=='Erro')d.value='';d.value+=k}d.focus()}
+
+/* ===== Conversor ===== */
+const U={Comprimento:{mm:.001,cm:.01,m:1,km:1000,in:.0254,ft:.3048,yd:.9144,mi:1609.344},Massa:{mg:1e-6,g:.001,kg:1,t:1000,oz:.0283495,lb:.45359237},Tempo:{s:1,min:60,h:3600,dia:86400},Temperatura:{'°C':0,'°F':0,K:0},Velocidade:{'km/h':1/3.6,'m/s':1,'mph':.44704},Volume:{mL:.001,L:1,'m³':1000,gal:3.78541}};
+function cvCat(){const us=Object.keys(U[$('cvc').value]),o=us.map(k=>`<option>${k}</option>`).join('');$('cvf').innerHTML=o;$('cvt').innerHTML=o;$('cvt').selectedIndex=Math.min(1,us.length-1);cvUp()}
+function cvUp(){const c=$('cvc').value,a=$('cvf').value,b=$('cvt').value,x=v('cvv');let r;
+ if(c=='Temperatura'){const C=a=='°C'?x:a=='°F'?(x-32)*5/9:x-273.15;r=b=='°C'?C:b=='°F'?C*9/5+32:C+273.15}else r=x*U[c][a]/U[c][b];
+ $('cvr').textContent=isNaN(r)?'Digite um valor':`${x} ${a} = ${fmt(+r.toFixed(8))} ${b}`}
+function cvSw(){const a=$('cvf').value;$('cvf').value=$('cvt').value;$('cvt').value=a;cvUp()}
+
+/* ===== Gráficos ===== */
+function gl(a,b,f){const s=Math.max(1,Math.ceil((b-a)/20));for(let k=Math.ceil(a/s)*s;k<=b;k+=s)f(k)}
+function plot(c,fs,x0,x1){const g=c.getContext('2d'),W=c.width,H2=c.height,ys=[];g.fillStyle='#111';g.fillRect(0,0,W,H2);
+ fs.forEach(f=>{for(let k=0;k<=200;k++){try{const y=f(x0+(x1-x0)*k/200);if(isFinite(y))ys.push(y)}catch(e){}}});
+ let y0=Math.min(...ys,0),y1=Math.max(...ys,0);if(y1-y0<1){y0-=1;y1+=1}const p=(y1-y0)*.1;y0-=p;y1+=p;
+ const X=x=>(x-x0)/(x1-x0)*W,Y=y=>H2-(y-y0)/(y1-y0)*H2;g.font='11px Inter';g.fillStyle='#888';g.strokeStyle='#2a2a2a';g.beginPath();
+ gl(x0,x1,k=>{g.moveTo(X(k),0);g.lineTo(X(k),H2)});gl(y0,y1,k=>{g.moveTo(0,Y(k));g.lineTo(W,Y(k))});g.stroke();
+ gl(x0,x1,k=>k&&g.fillText(k,X(k)+2,Math.min(Math.max(Y(0)-3,10),H2-3)));gl(y0,y1,k=>k&&g.fillText(k,Math.min(Math.max(X(0)+3,0),W-24),Y(k)-2));
+ g.strokeStyle='#888';g.beginPath();g.moveTo(X(0),0);g.lineTo(X(0),H2);g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();
+ fs.forEach((f,j)=>{g.strokeStyle=['#f0b429','#38bdf8','#4ade80'][j%3];g.lineWidth=2;g.beginPath();let on=0;for(let k=0;k<=500;k++){const x=x0+(x1-x0)*k/500;let y;try{y=f(x)}catch(e){y=NaN}if(isFinite(y)&&Math.abs(Y(y))<H2*4){on?g.lineTo(X(x),Y(y)):g.moveTo(X(x),Y(y));on=1}else on=0}g.stroke()});g.lineWidth=1}
+function grUp(){const ss2=$('gf').value.split(';').map(s=>s.trim()).filter(Boolean),x0=v('gx0'),x1=v('gx1'),xv=v('gxv');
+ if(!ss2.length||isNaN(x0)||isNaN(x1)||x1<=x0){$('gm').innerHTML='<span class=bad>Confira a função e o intervalo de x.</span>';return}
+ try{ss2.forEach(s=>ev(s,{x:1}))}catch(e){$('gm').innerHTML='<span class=bad>Função inválida. Exemplos: x², 2x+1, sin(x), sqrt(x), 1/x</span>';return}
+ plot($('gc'),ss2.map(s=>x=>ev(s,{x})),x0,x1);
+ $('gm').innerHTML=isNaN(xv)?'':ss2.map(s=>`<div class=res>${esc(s.startsWith('y')?s:'y = '+s)} → para x = ${xv}: y = ${fmt(ev(s,{x:xv}))}</div>`).join('')}
+
+/* ===== Porcentagem (inclui INSS e média ponderada) ===== */
+const PM={inc:['Aumento percentual',['Valor original','Porcentagem (%)'],[1000,10],(a,b)=>[['Valor final',r$(a*(1+b/100))],['Aumento',r$(a*b/100)]]],
+ dec:['Redução / desconto',['Valor original','Porcentagem (%)'],[1000,10],(a,b)=>[['Valor final',r$(a*(1-b/100))],['Desconto',r$(a*b/100)]]],
+ of:['Quanto é X% de Y',['Porcentagem (%)','Valor'],[20,250],(a,b)=>[['Resultado',fmt(a*b/100)]]],
+ ratio:['Quantos % uma parte é do total',['Valor parcial','Valor total'],[50,200],(a,b)=>[['Porcentagem',fmt(+(a/b*100).toFixed(4))+'%']]],
+ inss:['Cálculo de INSS',['Salário bruto (R$)'],[3000],s=>{let p=0,t=0;for(const[l,r]of[[1320,.075],[2571.29,.09],[3856.94,.12],[7507.49,.14]]){if(s>p)t+=(Math.min(s,l)-p)*r;p=l}return[['Desconto INSS',r$(t)],['Salário líquido',r$(s-t)],['Alíquota efetiva',s>0?fp(t/s*100)+'%':'—']]}],
+ weighted:['Nota com peso',['Nota 1','Peso 1','Nota 2','Peso 2'],[7.5,2,8,3],(a,b,c,d)=>[['Média ponderada',fmt(+((a*b+c*d)/(b+d)).toFixed(4))],['Soma dos pesos',b+d]]]};
+function pmR(){const m=PM[$('pm').value];$('pi').innerHTML=m[1].map((l,i)=>`<label>${l}<input id=p${i} type=number step=any value=${m[2][i]} oninput=pmC()></label>`).join('');pmC()}
+function pmC(){const m=PM[$('pm').value],a=m[1].map((_,i)=>v('p'+i));$('pr').innerHTML=a.some(isNaN)?'Preencha os campos':m[3](...a).map(([l,x])=>`<div class=res>${l}: ${x}</div>`).join('')}
+
+/* ===== Consumo elétrico ===== */
+function enC(){const P=v('ep'),h=v('eh'),d=v('ed'),t=v('et'),k=P*h/1000;$('er2').innerHTML=[P,h,d,t].some(isNaN)?'Preencha os campos':[['Consumo diário',fp(k)+' kWh'],['Consumo mensal',fp(k*d)+' kWh'],['Custo diário',r$(k*t)],['Custo mensal',r$(k*d*t)]].map(([l,x])=>`<div class=res>${l}: ${x}</div>`).join('')}
+
+/* ===== Matrizes ===== */
+const mp=t=>t.trim().split('\n').map(r=>r.trim().split(/\s+/).map(Number)),det=m=>m.length==1?m[0][0]:m[0].reduce((s,x,j)=>s+(j%2?-1:1)*x*det(m.slice(1).map(r=>r.filter((_,k)=>k!=j))),0),
+ mtx=M=>'<table>'+M.map(r=>'<tr>'+r.map(x=>'<td>'+fmt(x)+'</td>').join('')+'</tr>').join('')+'</table>';
+function mxRun(){try{const A=mp($('ma').value),B=mp($('mb').value),o=$('mo').value;let X;
+ if(o=='+'||o=='-'){if(A.length!=B.length||A[0].length!=B[0].length)throw Error('As matrizes precisam ter o mesmo tamanho.');X=A.map((r,i)=>r.map((x,j)=>o=='+'?x+B[i][j]:x-B[i][j]))}
+ else if(o=='*'){if(A[0].length!=B.length)throw Error('Nº de colunas de A deve ser igual ao nº de linhas de B.');X=A.map(r=>B[0].map((_,j)=>r.reduce((s,x,k)=>s+x*B[k][j],0)))}
+ else if(o=='t')X=A[0].map((_,j)=>A.map(r=>r[j]));
+ else{if(A.length!=A[0].length)throw Error('O determinante exige matriz quadrada.');X=[[det(A)]]}
+ if(X.flat().some(isNaN))throw Error('Use apenas números separados por espaço.');$('mr').innerHTML=mtx(X)}catch(e){$('mr').innerHTML='<span class=bad>'+esc(e.message)+'</span>'}}
+
+/* ===== Equações ===== */
+function eqRun(){const g=$('eg').value,a=v('ea'),b=v('eb'),c=v('ec');let h;
+ if([a,b].some(isNaN)||(g=='2'&&isNaN(c)))h='Preencha os campos';else if(a==0)h='O coeficiente a deve ser diferente de zero.';
+ else if(g=='1')h=`${a}x + ${b} = 0<br>x = −b/a = <b>${fmt(-b/a)}</b>`;
+ else{const d=b*b-4*a*c;h=`Δ = b² − 4ac = ${fmt(d)}<br>`+(d<0?'Δ &lt; 0: não há raízes reais.':d==0?`Raiz dupla: x = −b/2a = <b>${fmt(-b/(2*a))}</b>`:`x₁ = <b>${fmt((-b+Math.sqrt(d))/(2*a))}</b><br>x₂ = <b>${fmt((-b-Math.sqrt(d))/(2*a))}</b>`)}
+ $('er').innerHTML='<div class=res>'+h+'</div>'}
+
+/* ===== Geometria (2D, ângulos e sólidos 3D) ===== */
+const GEO={'Quadrado':[['Lado'],a=>[['Área',a[0]**2],['Perímetro',4*a[0]]]],'Retângulo':[['Base','Altura'],a=>[['Área',a[0]*a[1]],['Perímetro',2*(a[0]+a[1])]]],
+ 'Triângulo':[['Base','Altura','Lado 1','Lado 2','Lado 3'],a=>[['Área',a[0]*a[1]/2],['Perímetro',a[2]+a[3]+a[4]]]],'Círculo':[['Raio'],a=>[['Área',Math.PI*a[0]**2],['Circunferência',2*Math.PI*a[0]]]],
+ 'Trapézio':[['Base maior','Base menor','Altura'],a=>[['Área',(a[0]+a[1])*a[2]/2]]],'Polígono regular (ângulos)':[['Nº de lados','Lado'],a=>[['Soma dos ângulos internos',(a[0]-2)*180+'°'],['Cada ângulo interno',fp((a[0]-2)*180/a[0])+'°'],['Perímetro',a[0]*a[1]]]],
+ 'Cubo':[['Aresta'],a=>[['Volume',a[0]**3],['Área total',6*a[0]**2]]],'Paralelepípedo':[['a','b','c'],a=>[['Volume',a[0]*a[1]*a[2]],['Área total',2*(a[0]*a[1]+a[0]*a[2]+a[1]*a[2])]]],
+ 'Esfera':[['Raio'],a=>[['Volume',4/3*Math.PI*a[0]**3],['Área',4*Math.PI*a[0]**2]]],'Cilindro':[['Raio','Altura'],a=>[['Volume',Math.PI*a[0]**2*a[1]],['Área total',2*Math.PI*a[0]*(a[0]+a[1])]]],
+ 'Cone':[['Raio','Altura'],a=>{const g=Math.hypot(a[0],a[1]);return[['Geratriz',g],['Volume',Math.PI*a[0]**2*a[1]/3],['Área total',Math.PI*a[0]*(a[0]+g)]]}]};
+function geS(){const g=GEO[$('gs').value];$('gi').innerHTML=g[0].map((l,i)=>`<label>${l}<input id=g${i} type=number step=any value=${i+3} oninput=geC()></label>`).join('');geC()}
+function geC(){const g=GEO[$('gs').value],a=g[0].map((_,i)=>v('g'+i));$('gr2').innerHTML=a.some(isNaN)?'Preencha os campos':g[1](a).map(([l,x])=>`<div class=res>${l}: ${fm(x)}</div>`).join('')}
+
+/* ===== Caderno ===== */
+const nbS=()=>ss('ff_nb',$('nbt').value);
+function nbCalc(){$('nbt').value=$('nbt').value.split('\n').map(l=>{const m=l.match(/^(.*\S)\s*=\s*$/);if(!m)return l;try{return l.trim()+' '+fmt(ev(m[1]))}catch(e){return l}}).join('\n');nbS()}
+
+/* ===== Mini motor SQL (CREATE, DROP, INSERT, SELECT, UPDATE, DELETE, WHERE, AND/OR, LIKE, JOIN, GROUP BY, ORDER BY, LIMIT) ===== */
+const mk=(c,rows)=>({c,r:rows.map(a=>Object.fromEntries(c.map((k,i)=>[k,a[i]])))});
+function val(x){x=x.trim();if(/^'.*'$/s.test(x))return x.slice(1,-1);if(/^-?\d+(\.\d+)?$/.test(x))return+x;if(/^null$/i.test(x))return null}
+function cond(w){const ors=w.split(/\s+or\s+/i).map(o=>o.split(/\s+and\s+/i).map(c=>{const m=c.trim().match(/^([\w.]+)\s*(<=|>=|<>|!=|=|<|>|like)\s*(.+)$/is);if(!m)throw Error('Condição inválida: '+c);const x=val(m[3]);if(x===undefined)throw Error("Valor inválido em '"+c.trim()+"' (texto precisa de aspas simples)");return[m[1],m[2].toLowerCase(),x]}));
+ return r=>ors.some(a=>a.every(([k,o,x])=>{if(!(k in r))throw Error('Coluna desconhecida: '+k);const y=r[k];
+  switch(o){case'=':return y==x;case'<>':case'!=':return y!=x;case'<':return y<x;case'>':return y>x;case'<=':return y<=x;case'>=':return y>=x;
+  default:return new RegExp('^'+String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/%/g,'.*').replace(/_/g,'.')+'$','i').test(y)}}))}
+function sql(db,q){q=q.trim().replace(/;+\s*$/,'');let m;const T=n=>{n=n.toLowerCase();if(!db[n])throw Error('Tabela não existe: '+n);return db[n]};
+ if(m=q.match(/^create\s+table\s+(\w+)\s*\((.+)\)$/is)){const n=m[1].toLowerCase();if(db[n])throw Error('A tabela '+n+' já existe');db[n]={c:m[2].split(',').map(s=>s.trim().split(/\s+/)[0].toLowerCase()),r:[]};return{msg:'Tabela '+n+' criada',t:n}}
+ if(m=q.match(/^drop\s+table\s+(\w+)$/i)){T(m[1]);delete db[m[1].toLowerCase()];return{msg:'Tabela removida'}}
+ if(m=q.match(/^insert\s+into\s+(\w+)\s*(?:\(([^)]*)\))?\s*values\s*(.+)$/is)){const t=T(m[1]),cs=m[2]?m[2].split(',').map(s=>s.trim().toLowerCase()):t.c;let n=0;
+  for(const g of m[3].match(/\([^)]*\)/g)||[]){const vs=g.slice(1,-1).split(',').map(x=>val(x));if(vs.length!=cs.length||vs.includes(undefined))throw Error('Os valores não conferem com as colunas (texto vai entre aspas simples)');const o={};t.c.forEach(c=>o[c]=null);cs.forEach((c,i)=>{if(!(c in o))throw Error('Coluna desconhecida: '+c);o[c]=vs[i]});t.r.push(o);n++}
+  if(!n)throw Error('Use: INSERT INTO tabela VALUES (...)');return{msg:n+' registro(s) inserido(s)',t:m[1].toLowerCase()}}
+ if(m=q.match(/^update\s+(\w+)\s+set\s+(.+?)(?:\s+where\s+(.+))?$/is)){const t=T(m[1]),f=m[3]?cond(m[3]):()=>1,st=m[2].split(',').map(s=>{const p=s.split('=');return[p[0].trim().toLowerCase(),val(p.slice(1).join('='))]});let n=0;
+  t.r.forEach(r=>{if(f(r)){st.forEach(([k,x])=>{if(!(k in r)||x===undefined)throw Error('SET inválido: '+k);r[k]=x});n++}});return{msg:n+' registro(s) alterado(s)',t:m[1].toLowerCase()}}
+ if(m=q.match(/^delete\s+from\s+(\w+)(?:\s+where\s+(.+))?$/is)){const t=T(m[1]),f=m[2]?cond(m[2]):()=>1,a=t.r.length;t.r=t.r.filter(r=>!f(r));return{msg:(a-t.r.length)+' registro(s) removido(s)',t:m[1].toLowerCase()}}
+ if(m=q.match(/^select\s+(.+?)\s+from\s+(\w+)(?:\s+(?:inner\s+)?join\s+(\w+)\s+on\s+([\w.]+)\s*=\s*([\w.]+))?(?:\s+where\s+(.+?))?(?:\s+group\s+by\s+(\w+))?(?:\s+order\s+by\s+([\w.]+)(?:\s+(asc|desc))?)?(?:\s+limit\s+(\d+))?$/is)){
+  const A=m[2].toLowerCase();let rows=T(A).r.map(r=>{const o={...r};for(const k in r)o[A+'.'+k]=r[k];return o});
+  if(m[3]){const B=m[3].toLowerCase(),out=[];rows.forEach(a=>T(B).r.forEach(b=>{const o={...a};for(const k in b){o[k]=b[k];o[B+'.'+k]=b[k]}const g=k=>{if(!(k in o))throw Error('Coluna desconhecida: '+k);return o[k]};if(g(m[4])==g(m[5]))out.push(o)}));rows=out}
+  if(m[6])rows=rows.filter(cond(m[6]));
+  const sel=m[1].split(',').map(s=>s.trim()),ag=s=>s.match(/^(count|sum|avg|min|max)\(\s*(\*|[\w.]+)\s*\)$/i);
+  const srt=a=>{if(m[8]&&a.length){const k=m[8],d=(m[9]||'').toLowerCase()=='desc'?-1:1;if(!(k in a[0]))throw Error('ORDER BY: coluna desconhecida: '+k);a.sort((x,y)=>(x[k]>y[k]?1:x[k]<y[k]?-1:0)*d)}};let res;
+  if(sel.some(ag)){const gs=m[7]?[...new Set(rows.map(r=>r[m[7]]))]:[null];
+   res=gs.map(gv=>{const g=m[7]?rows.filter(r=>r[m[7]]==gv):rows,o={};sel.forEach(s=>{const a=ag(s);if(!a){if(g[0]&&!(s in g[0]))throw Error('Coluna desconhecida: '+s);o[s]=g[0]?g[0][s]:null;return}
+    const f=a[1].toLowerCase(),c=a[2],x=f=='count'&&c=='*'?g:g.map(r=>r[c]).filter(y=>y!=null),n=x.length,sm=x.reduce((p,y)=>p+(+y||0),0);
+    o[f+'('+c+')']=f=='count'?n:f=='sum'?sm:f=='avg'?(n?+(sm/n).toFixed(2):null):f=='min'?Math.min(...x):Math.max(...x)});return o});srt(res)}
+  else{srt(rows);res=rows.map(r=>{const o={};sel.forEach(s=>{if(s=='*')Object.keys(r).filter(k=>!k.includes('.')).forEach(k=>o[k]=r[k]);else{if(!(s in r))throw Error('Coluna desconhecida: '+s);o[s]=r[s]}});return o})}
+  if(m[10])res=res.slice(0,+m[10]);return{rows:res,msg:res.length+' linha(s) encontrada(s)'}}
+ throw Error('Comando não suportado. Use SELECT, INSERT, UPDATE, DELETE, CREATE TABLE ou DROP TABLE.')}
+const tbl=(r,c)=>{c=c||Object.keys(r[0]||{});return c.length?'<div style="overflow:auto"><table><tr>'+c.map(k=>`<th>${esc(k)}</th>`).join('')+'</tr>'+(r.length?r.map(o=>'<tr>'+c.map(k=>`<td>${o[k]===null?'NULL':esc(o[k])}</td>`).join('')+'</tr>').join(''):`<tr><td colspan=${c.length}><i>Nenhum resultado</i></td></tr>`)+'</table></div>':'<i>Nenhum resultado</i>'};
+
+/* ===== Laboratório SQL (ferramenta) ===== */
+const SEED=()=>({clientes:mk(['id','nome','email','telefone'],[[1,'João Silva','joao@email.com','(21) 9999-9999'],[2,'Maria Souza','maria@email.com','(21) 8888-8888'],[3,'Carlos Oliveira','carlos@email.com','(21) 7777-7777']]),
+ produtos:mk(['id','nome','preco','estoque'],[[1,'Notebook',3500,10],[2,'Smartphone',1500,20],[3,'Tablet',1200,5]]),pedidos:mk(['id','cliente_id','produto_id','quantidade','data'],[[1,1,1,1,'2023-01-15'],[2,2,2,2,'2023-01-20'],[3,3,3,1,'2023-02-05']])});
+const EX=["SELECT * FROM clientes;","SELECT nome, preco FROM produtos WHERE preco > 1300 ORDER BY preco DESC;","SELECT * FROM clientes WHERE nome LIKE 'M%';","INSERT INTO clientes VALUES (4, 'Bia Lima', 'bia@email.com', '(21) 6666-6666');","UPDATE produtos SET estoque = 8 WHERE id = 1;","DELETE FROM pedidos WHERE id = 3;","SELECT clientes.nome, pedidos.quantidade FROM clientes JOIN pedidos ON clientes.id = pedidos.cliente_id;","SELECT COUNT(*) FROM produtos;","CREATE TABLE alunos (id, nome, turma);","INSERT INTO alunos VALUES (1, 'Ana', '3A'), (2, 'Lia', '3B');"];
+let PDB;
+function bdLoad(){try{PDB=JSON.parse(ls('ff_db',''))}catch(e){}if(!PDB||typeof PDB!='object')PDB=SEED()}
+function bdTabs(){$('bdt').innerHTML=Object.keys(PDB).map(n=>`<div class=res style="cursor:pointer" onclick="$('sq').value='SELECT * FROM ${n};';bdRun()">📋 ${n}<br><small class=m>${PDB[n].c.join(', ')} · ${PDB[n].r.length} reg.</small></div>`).join('')||'<span class=m>Nenhuma tabela.</span>'}
+function bdRun(){let h;try{const r=sql(PDB,$('sq').value);ss('ff_db',JSON.stringify(PDB));h=`<b class=ok2>✓ ${r.msg}</b>`+(r.rows?tbl(r.rows):r.t&&PDB[r.t]?tbl(PDB[r.t].r,PDB[r.t].c):'')}catch(e){h=`<b class=bad>✗ ${esc(e.message)}</b>`}$('bdr').innerHTML=h;bdTabs()}
+function bdReset(){PDB=SEED();ss('ff_db',JSON.stringify(PDB));bdTabs();$('bdr').innerHTML='<b class=ok2>✓ Banco restaurado</b>'}
+
+/* ===== Motor dos desafios ===== */
+let Q,TM;
+const tm=()=>{const s=(Date.now()-Q.t0)/1000|0;return String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+function qh(){const h=$('qh');if(!h){clearInterval(TM);return}h.innerHTML=`<span>Pergunta ${Math.min(Q.i+1,Q.n)}/${Q.n}</span><span>✓ ${Q.ok}</span><span>✗ ${Q.er}</span><span>🔥 ${Q.st}</span><span>⭐ ${Q.pts}</span><span>⏱ ${tm()}</span>`}
+function quiz(gen,n){clearInterval(TM);Q={i:0,ok:0,er:0,st:0,pts:0,n,gen,t0:Date.now()};$('pn').innerHTML='<div id=qh class=qh></div><div id=qb></div>';TM=setInterval(qh,500);nq()}
+function nq(){if(Q.i>=Q.n)return qe();const q=Q.q=Q.gen(Q.i);Q.done=0;Q.os=sh(q.o.map((t,k)=>[t,!k]));
+ $('qb').innerHTML=`${q.l?`<small class=m>Nível ${q.l}</small>`:''}<p><b>${q.t}</b></p>${q.x||''}${Q.os.map((o,k)=>`<button class="btn opt" onclick=ans(${k})>${'ABCD'[k]}) ${o[0]}</button>`).join('')}<div id=qf></div>`;qh();if(q.d)q.d($('qc'))}
+function ans(k){if(Q.done)return;Q.done=1;const ok=Q.os[k][1],q=Q.q;
+ document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(Q.os[j][1])b.classList.add('ok');else if(j==k)b.classList.add('no')});
+ if(ok){Q.ok++;Q.st++;Q.pts+=10+2*Math.min(Q.st,5)}else{Q.er++;Q.st=0}Q.i++;qh();
+ $('qf').innerHTML=`<div class=res><span class=${ok?'ok2':'bad'}>${ok?'✓ CORRETO!':'✗ INCORRETO — resposta certa: '+q.o[0]}</span>${q.f||''}<p style="font-weight:400;margin-bottom:0">${q.e}</p></div><p><button class="btn p" onclick=nq()>${Q.i>=Q.n?'Ver resultado':'Próxima →'}</button></p>`}
+function qe(){clearInterval(TM);const p=Math.round(Q.ok/Q.n*100),r=p>=90?'Excelente':p>=70?'Muito bom':p>=50?'Bom':'Continue praticando';
+ $('pn').innerHTML=`<div style="text-align:center"><h2>🏁 Fim da rodada</h2><div class=big>${Q.ok}/${Q.n} acertos</div><p>${p}% de aproveitamento · Tempo: ${tm()} · ⭐ ${Q.pts} pontos</p><div class=res style="display:inline-block;font-size:1.3rem;color:var(--g)">${r}</div><p><button class="btn p" onclick=route()>Jogar de novo</button> <button class=btn onclick="location.hash='d'">Outros desafios</button></p></div>`}
+
+/* ===== Desafio SQL: banco de questões ===== */
+const BASE=()=>({clientes:mk(['id','nome','cidade','idade'],[[1,'João','Rio',17],[2,'Pedro','Niterói',18],[3,'Ana','Rio',16],[4,'Lia','Niterói',19],[5,'Caio','Rio',20]]),
+ pedidos:mk(['id','cliente_id','produto','valor'],[[1,1,'Caderno',20],[2,1,'Mochila',80],[3,3,'Caneta',5],[4,5,'Mochila',80],[5,3,'Caderno',20]])});
+/* [nível, enunciado, SQL, alternativas (a 1ª é a correta; são embaralhadas), explicação, modo: r=executa e mostra resultado, c=resultado→código, ''=sem execução] */
+const SQ=[
+[1,'O que esta consulta faz?',"SELECT * FROM clientes WHERE cidade = 'Rio';",['Mostra os clientes que moram no Rio','Apaga os clientes do Rio','Mostra somente clientes de Niterói','Cria uma nova tabela'],'A consulta seleciona todos os registros da tabela clientes cujo campo cidade é igual a Rio.','r'],
+[1,'Qual comando deve ser utilizado para adicionar um novo cliente?','',['INSERT','SELECT','DELETE','UPDATE'],'INSERT INTO adiciona novos registros. SELECT consulta, DELETE apaga e UPDATE altera.',''],
+[1,'O que esta consulta faz?','SELECT nome FROM clientes;',['Mostra apenas a coluna nome de todos os clientes','Apaga a coluna nome','Mostra todas as colunas da tabela','Cria uma coluna chamada nome'],'SELECT lista só as colunas pedidas; aqui, somente nome.','r'],
+[1,'Qual será o resultado?','SELECT nome FROM clientes ORDER BY idade;',['Ana, João, Pedro, Lia, Caio','Caio, Lia, Pedro, João, Ana','João, Pedro, Ana, Lia, Caio','Ana, Caio, João, Lia, Pedro'],'ORDER BY idade ordena do menor para o maior (ASC é o padrão): 16, 17, 18, 19, 20.','r'],
+[1,'Qual consulta mostra os clientes da maior para a menor idade?','',['SELECT * FROM clientes ORDER BY idade DESC;','SELECT * FROM clientes ORDER BY idade;','SELECT * FROM clientes WHERE idade DESC;','SELECT idade DESC FROM clientes;'],'ORDER BY coluna DESC ordena em ordem decrescente.',''],
+[1,'Qual linha insere corretamente um cliente?','',["INSERT INTO clientes VALUES (6, 'Duda', 'Rio', 17);","INSERT clientes (6, 'Duda', 'Rio', 17);","ADD INTO clientes VALUES (6, 'Duda');","INSERT VALUES clientes (6, 'Duda', 'Rio', 17);"],'A forma correta é INSERT INTO tabela VALUES (...), com um valor para cada coluna.',''],
+[1,'Qual será o resultado?','SELECT nome FROM clientes WHERE idade >= 18;',['Pedro, Lia e Caio','João e Ana','Pedro e Lia','Todos os clientes'],'WHERE filtra as linhas: só idade 18 ou mais (Pedro 18, Lia 19, Caio 20).','r'],
+[1,'Encontre o erro','SELECT * clientes;',['Falta a palavra FROM antes do nome da tabela','Falta WHERE','Falta ORDER BY','O ponto e vírgula está errado'],'A estrutura básica é SELECT colunas FROM tabela.',''],
+[1,'Qual dessas consultas produziria este resultado?','',["SELECT nome FROM clientes WHERE cidade = 'Niterói';","SELECT nome FROM clientes WHERE cidade = 'Rio';",'SELECT * FROM clientes;','SELECT cidade FROM clientes;'],'Só Pedro e Lia moram em Niterói; a consulta filtra por cidade e mostra a coluna nome.','c'],
+[1,'Encontre o erro',"SELECT * FROM clientes WHERE cidade = Rio;",['O texto Rio precisa estar entre aspas simples','Falta GROUP BY','SELECT * não é permitido','FROM deve vir antes de SELECT'],"Valores de texto são escritos entre aspas: cidade = 'Rio'.",''],
+[2,'O que esta consulta faz?',"UPDATE clientes SET cidade = 'Rio' WHERE nome = 'Pedro';",['Muda a cidade de Pedro para Rio','Insere um cliente chamado Rio','Apaga o cliente Pedro','Mostra os clientes do Rio'],'UPDATE altera registros existentes; o WHERE limita a mudança ao cliente Pedro.','r'],
+[2,'O que esta consulta faz?','DELETE FROM clientes WHERE idade < 18;',['Apaga os clientes menores de 18 anos','Apaga todos os clientes','Mostra os menores de 18','Altera a idade para 18'],'DELETE FROM remove os registros que atendem à condição: João (17) e Ana (16).','r'],
+[2,'Qual comando apaga o cliente com id 3?','',['DELETE FROM clientes WHERE id = 3;','DELETE clientes = 3;','REMOVE FROM clientes WHERE id = 3;','SELECT DELETE FROM clientes WHERE id = 3;'],'A sintaxe é DELETE FROM tabela WHERE condição. Sem WHERE, todos os registros seriam apagados!',''],
+[2,'Qual será o resultado?',"SELECT nome FROM clientes WHERE cidade = 'Rio' AND idade > 16;",['João e Caio','João e Ana','Ana e Caio','Apenas Pedro'],'AND exige as duas condições: morar no Rio e ter mais de 16 anos (João 17 e Caio 20).','r'],
+[2,'Qual será o resultado?','SELECT nome FROM clientes WHERE idade = 16 OR idade = 20;',['Ana e Caio','Somente Ana','João e Pedro','Nenhum registro'],'Com OR basta uma condição ser verdadeira: idade 16 (Ana) ou 20 (Caio).','r'],
+[2,'Qual será o resultado?',"SELECT nome FROM clientes WHERE nome LIKE 'L%';",['Somente Lia','João e Lia','Todos os nomes','Nenhum registro'],"LIKE 'L%' busca textos que começam com L; o símbolo % representa qualquer sequência de letras.",'r'],
+[2,'O que esta consulta faz?','SELECT * FROM clientes ORDER BY idade DESC LIMIT 2;',['Mostra os dois clientes mais velhos','Mostra os dois mais novos','Mostra só o cliente de id 2','Apaga dois clientes'],'Ordena da maior para a menor idade e LIMIT 2 mantém só as duas primeiras linhas.','r'],
+[2,'Qual comando altera registros que já existem?','',['UPDATE','INSERT','SELECT','CREATE'],'UPDATE ... SET ... WHERE altera dados já cadastrados.',''],
+[2,'Encontre o erro','DELETE * FROM clientes WHERE id = 1;',['DELETE não usa * (o correto é DELETE FROM ...)','Falta ORDER BY','WHERE não pode ser usado com DELETE','id deve ficar entre aspas'],'DELETE apaga linhas inteiras, por isso não recebe lista de colunas.',''],
+[2,'Qual dessas consultas produziria este resultado?','',['SELECT nome, idade FROM clientes WHERE idade < 18;','SELECT nome, idade FROM clientes WHERE idade > 18;','SELECT nome, cidade FROM clientes WHERE idade < 18;','SELECT * FROM clientes ORDER BY idade;'],'O resultado tem as colunas nome e idade, só com menores de 18 anos: João e Ana.','c'],
+[2,'Qual linha altera a idade do cliente 2 para 19?','',['UPDATE clientes SET idade = 19 WHERE id = 2;','UPDATE clientes idade = 19 WHERE id = 2;','SET clientes idade = 19 WHERE id = 2;','INSERT INTO clientes SET idade = 19;'],'A sintaxe é UPDATE tabela SET coluna = valor WHERE condição.',''],
+[3,'Qual será o resultado?',"SELECT COUNT(*) FROM clientes WHERE cidade = 'Rio';",['3','5','2','1'],'COUNT(*) conta as linhas que sobraram depois do WHERE: João, Ana e Caio.','r'],
+[3,'Qual será o resultado?','SELECT AVG(idade) FROM clientes;',['18','17','19','90'],'AVG calcula a média: (17+18+16+19+20) ÷ 5 = 18.','r'],
+[3,'Qual será o resultado?','SELECT SUM(valor) FROM pedidos;',['205','200','185','225'],'SUM soma a coluna valor: 20 + 80 + 5 + 80 + 20 = 205.','r'],
+[3,'O que esta consulta mostra?','SELECT cidade, COUNT(*) FROM clientes GROUP BY cidade;',['Quantos clientes existem em cada cidade','Só o total de cidades diferentes','Todos os clientes em ordem alfabética','A média de idade por cidade'],'GROUP BY agrupa as linhas por cidade e COUNT(*) conta cada grupo.','r'],
+[3,'Qual será o resultado?','SELECT MAX(idade) FROM clientes;',['20','16','5','18'],'MAX devolve o maior valor da coluna: 20.','r'],
+[3,'Qual será o resultado?',"SELECT SUM(valor) FROM pedidos WHERE produto = 'Mochila';",['160','80','205','100'],'O WHERE filtra os dois pedidos de Mochila (80 + 80) antes de somar.','r'],
+[3,'O que esta consulta mostra?','SELECT produto, SUM(valor) FROM pedidos GROUP BY produto;',['O total vendido de cada produto','Apenas o produto mais caro','Todos os pedidos sem alteração','O número de clientes'],'Cada produto vira um grupo e SUM soma os valores dele: Caderno 40, Mochila 160, Caneta 5.','r'],
+[3,'O que esta consulta faz?','SELECT clientes.nome, pedidos.produto FROM clientes JOIN pedidos ON clientes.id = pedidos.cliente_id;',['Liga cada cliente aos seus pedidos pelo id','Apaga pedidos sem cliente','Soma o valor de todos os pedidos','Cria a tabela pedidos'],'JOIN combina linhas de duas tabelas quando a condição do ON é verdadeira. Quem não fez pedido não aparece.','r'],
+[3,'Qual dessas consultas produziria este resultado?','',['SELECT cidade, COUNT(*) FROM clientes GROUP BY cidade;','SELECT cidade FROM clientes;','SELECT COUNT(*) FROM clientes;','SELECT * FROM clientes ORDER BY cidade;'],'O resultado traz uma linha por cidade com a contagem de clientes: típico de GROUP BY + COUNT.','c'],
+[4,'Quem aparece no resultado?',"SELECT clientes.nome FROM clientes JOIN pedidos ON clientes.id = pedidos.cliente_id WHERE pedidos.produto = 'Mochila';",['João e Caio','Ana e João','Somente Caio','Pedro e Lia'],'O JOIN liga clientes a pedidos e o WHERE mantém só as Mochilas: pedido 2 (João) e pedido 4 (Caio).','r'],
+[4,'Na consulta abaixo, qual coluna liga pedidos a clientes?','SELECT * FROM clientes JOIN pedidos ON clientes.id = pedidos.cliente_id;',['pedidos.cliente_id','clientes.cidade','pedidos.valor','clientes.idade'],'cliente_id é a chave estrangeira: guarda o id do cliente dono do pedido.','r'],
+[4,'Qual será o resultado?','SELECT cidade, AVG(idade) FROM clientes GROUP BY cidade;',['Rio 17,67 e Niterói 18,5','Rio 18,5 e Niterói 17,67','Rio 17 e Niterói 19','Rio 53 e Niterói 37'],'Rio: (17+16+20) ÷ 3 ≈ 17,67. Niterói: (18+19) ÷ 2 = 18,5.','r'],
+[4,'Encontre o erro','SELECT nome, COUNT(*) FROM clientes;',['Mistura coluna comum e COUNT sem GROUP BY nome','COUNT não existe no SQL','FROM está na posição errada','Falta LIMIT'],'Ao misturar uma coluna comum com função de agregação, é preciso agrupar a coluna com GROUP BY.',''],
+[4,'Qual dessas consultas produziria este resultado?','',["SELECT pedidos.produto FROM clientes JOIN pedidos ON clientes.id = pedidos.cliente_id WHERE clientes.nome = 'Ana';","SELECT produto FROM pedidos WHERE nome = 'Ana';","SELECT * FROM clientes WHERE produto = 'Ana';",'SELECT produto FROM pedidos JOIN clientes;'],'O nome está em clientes e o produto em pedidos: é preciso JOIN com ON e filtro por clientes.nome.','c'],
+[4,'Qual será o resultado?','SELECT produto, COUNT(*) FROM pedidos GROUP BY produto ORDER BY produto;',['Caderno 2, Caneta 1, Mochila 2','Mochila 2, Caneta 1, Caderno 2','Caderno 1, Caneta 2, Mochila 1','Caderno 2, Mochila 2, Caneta 1'],'Agrupa por produto, conta cada grupo e ordena alfabeticamente pelo nome do produto.','r'],
+[4,'O que esta consulta faz?',"UPDATE pedidos SET valor = 100 WHERE produto = 'Mochila';",['Muda para 100 o valor dos pedidos de Mochila','Muda todos os pedidos para 100','Apaga os pedidos de Mochila','Soma 100 ao valor total'],'Só as linhas com produto Mochila são afetadas; as demais ficam iguais.','r'],
+[4,'Qual será o resultado?',"SELECT nome FROM clientes WHERE cidade = 'Rio' AND idade >= 17 ORDER BY idade DESC;",['Caio, João','João, Caio','Ana, João','Caio, Ana'],'Rio com 17 anos ou mais: João (17) e Caio (20); DESC coloca o mais velho primeiro.','r']];
+function sq([n,t,s,o,e,k]){const db=BASE(),tn=z=>[...new Set([...z.matchAll(/(?:from|join|into|update)\s+(\w+)/gi)].map(m=>m[1].toLowerCase()))].filter(a=>db[a]),
+ shw=z=>tn(z).map(a=>`<div class=tn>${a.toUpperCase()}</div>`+tbl(db[a].r,db[a].c)).join('');let x,f='';
+ if(k=='c'){x=shw(o[0])+'<div class=tn>RESULTADO DA CONSULTA</div>'+tbl(sql(BASE(),o[0]).rows);f='<div class=tn>CONSULTA CORRETA</div><pre>'+esc(o[0])+'</pre>'}
+ else{x=shw(s||o[0])+(s?'<pre>'+esc(s)+'</pre>':'');if(k=='r'){const d=BASE(),r=sql(d,s);f='<div class=tn>RESULTADO'+(r.rows?'':' (tabela depois do comando)')+'</div>'+(r.rows?tbl(r.rows):tbl(d[r.t].r,d[r.t].c))}}
+ return{t,x,o:o.map(esc),e,f,l:n}}
+function sqlStart(l){let L;if(l)L=sh(SQ.filter(q=>q[0]==l)).slice(0,10);else{const g=n=>sh(SQ.filter(q=>q[0]==n));L=[...g(1).slice(0,3),...g(2).slice(0,3),...g(3).slice(0,2),...g(4).slice(0,2)]}quiz(i=>sq(L[i]),L.length)}
+
+/* ===== Geradores dos outros desafios (perguntas novas a cada rodada) ===== */
+function wr(c,f=String){const st=c<1?.1:c<10?1:Math.max(1,Math.round(c/10)),w=new Set([c]);let k=0;while(w.size<4&&k++<99){const x=+(c+pk([-3,-2,-1,1,2,3,4])*st).toFixed(2);if(x>=0)w.add(x)}return[...w].map(f)}
+const wi=c=>[...new Set([c,c+1,c-1,c+2,c-2,-c])].slice(0,4).map(String);
+const GP=i=>{let t,c,e,f=fp;
+ if(i<4){const p=pk([10,20,25,50]),n=pk([40,80,100,120,200,250]);c=p*n/100;t=`Quanto é ${p}% de ${n}?`;e=`${p}/100 × ${n} = ${fp(c)}`}
+ else if(i<7){const n=pk([100,200,300,500]),p=pk([10,15,20,25]);c=n*(1-p/100);f=r$;t=`Um produto custa ${r$(n)} e recebeu ${p}% de desconto. Qual é o novo preço?`;e=`Desconto: ${p}% de ${n} = ${r$(n*p/100)}. Novo preço: ${r$(n)} − ${r$(n*p/100)} = ${r$(c)}.`}
+ else if(i<9){const n=pk([20,40,50,60]),p=pk([10,20,30,40,50]);c=n*p/100;t=`Uma turma tem ${n} alunos. ${p}% faltaram. Quantos alunos faltaram?`;e=`${p}% de ${n} = ${fp(c)} alunos.`}
+ else{const n=pk([150,200,400,800]),p=pk([10,20,30]);c=n*(1+p/100);f=r$;t=`Um salário de ${r$(n)} recebeu aumento de ${p}%. Qual é o novo valor?`;e=`Aumento: ${r$(n*p/100)}. Novo valor: ${r$(c)}.`}
+ return{t,o:wr(c,f),e}};
+const AP=[['TV',100],['Chuveiro',5000],['Ferro de passar',1000],['Lâmpada LED',10],['Ventilador',80],['Micro-ondas',1200],['Computador',300],['Geladeira',150]];
+const GEn=i=>{
+ if(i<4){const P=pk([60,100,150,200,1000,1500]),h=pk([2,3,4,5,8]),c=P*h/1000;return{t:`Um aparelho de ${P} W fica ligado ${h} horas por dia. Qual é o consumo aproximado em um dia?`,o:wr(c,x=>fp(x)+' kWh'),e:`E = P × t = ${P} W × ${h} h = ${P*h} Wh = ${fp(c)} kWh.`}}
+ if(i<7){const P=pk([100,500,1000,1500]),h=pk([2,4,5]),tf=pk([.5,.8,1]),k=P*h/1000*30,c=k*tf;return{t:`Um aparelho de ${P} W é usado ${h} h por dia durante 30 dias. Com tarifa de ${r$(tf)}/kWh, qual é o custo no mês?`,o:wr(c,r$),e:`${P} × ${h} ÷ 1000 × 30 = ${fp(k)} kWh. Custo: ${fp(k)} × ${r$(tf)} = ${r$(c)}.`}}
+ let a;do{a=sh(AP).slice(0,4).map(([n,P])=>[n,P,R(1,8)]);const z=a.map(y=>y[1]*y[2]).sort((p,q)=>q-p);if(z[0]!=z[1])break}while(1);
+ const b=a.reduce((m,y)=>y[1]*y[2]>m[1]*m[2]?y:m);return{t:'Qual aparelho consome mais energia por dia?',x:'<table><tr><th>Aparelho</th><th>Potência</th><th>Uso por dia</th></tr>'+a.map(y=>`<tr><td>${y[0]}</td><td>${y[1]} W</td><td>${y[2]} h</td></tr>`).join('')+'</table>',o:[b[0],...a.filter(y=>y!=b).map(y=>y[0])],e:'Energia = potência × tempo. '+a.map(y=>`${y[0]}: ${fp(y[1]*y[2]/1000)} kWh`).join(' · ')+'.'}};
+const FN=[['y = x',x=>x],['y = x²',x=>x*x],['y = 2x + 1',x=>2*x+1],['y = −x',x=>-x],['y = x + 2',x=>x+2],['y = 2x',x=>2*x],['y = −x²',x=>-x*x],['y = x − 1',x=>x-1]];
+const GGr=i=>{const f=pk(FN),cv='<canvas id=qc width=500 height=300 style="width:100%;max-width:500px;border-radius:8px"></canvas>',d=c=>plot(c,[f[1]],-5,5);
+ if(i%2==0)return{t:'Qual função corresponde a este gráfico?',x:cv,d,o:[f[0],...sh(FN.filter(z=>z!=f)).slice(0,3).map(z=>z[0])],e:`O gráfico é de ${f[0]}. Teste um ponto: em x = 1, esta função dá y = ${f[1](1)}.`};
+ const a=pk([-2,-1,0,1,2,3]),y=f[1](a);return{t:`Este é o gráfico de ${f[0]}. Qual é o valor de Y quando X = ${a}?`,x:cv,d,o:wi(y),e:`Substitua x = ${a} na função ${f[0]}: y = ${y}.`}};
+const GGm=i=>{const a=R(2,12),b=R(2,12),r=R(2,6),h=R(2,9),Z=[[`Um retângulo tem base ${a} cm e altura ${b} cm. Qual é a área?`,a*b,`A = base × altura = ${a} × ${b} = ${a*b} cm²`],[`Um retângulo tem lados ${a} cm e ${b} cm. Qual é o perímetro?`,2*(a+b),`P = 2 × (${a} + ${b}) = ${2*(a+b)} cm`],
+ [`Um triângulo tem base ${a*2} cm e altura ${b} cm. Qual é a área?`,a*b,`A = base × altura ÷ 2 = ${a*2} × ${b} ÷ 2 = ${a*b} cm²`],[`Um quadrado tem lado ${a} cm. Qual é o perímetro?`,4*a,`P = 4 × ${a} = ${4*a} cm`],
+ [`Um cubo tem aresta ${r} cm. Qual é o volume?`,r**3,`V = aresta³ = ${r}³ = ${r**3} cm³`],[`Um paralelepípedo mede ${r} × ${h} × ${b} cm. Qual é o volume?`,r*h*b,`V = ${r} × ${h} × ${b} = ${r*h*b} cm³`],[`Um cilindro tem raio ${r} cm e altura ${h} cm. Qual é o volume? (use π ≈ 3,14)`,+(3.14*r*r*h).toFixed(2),`V = π × r² × h = 3,14 × ${r}² × ${h} = ${fp(3.14*r*r*h)} cm³`]],
+ z=pk(Z.slice(...(i<4?[0,2]:i<8?[2,5]:[4,7])));return{t:z[0],o:wr(z[1],fp),e:z[2]}};
+const CVL=[['m','cm',100],['km','m',1000],['kg','g',1000],['h','min',60],['min','s',60],['L','mL',1000],['m','mm',1000],['t','kg',1000],['h','s',3600],['g','kg',.001],['cm','m',.01]];
+const GCv=i=>{let t,c,u,e;if(i<7){const x=pk([1,2,2.5,3,5,.5]),[a,b,f]=pk(i<4?CVL.slice(0,6):CVL);c=+(x*f).toFixed(4);u=b;t=`${fp(x)} ${a} equivalem a quantos ${b}?`;e=`1 ${a} = ${fp(f)} ${b}; então ${fp(x)} × ${fp(f)} = ${fp(c)} ${b}.`}
+ else{const k=R(0,2),x=k<2?pk([0,10,20,25,30,100]):pk([18,36,72,108]);c=k==0?x*9/5+32:k==1?x+273:x/3.6;u=['°F','K','m/s'][k];t=`${x} ${['°C','°C','km/h'][k]} equivalem a quantos ${u}?`;e=['°F = °C × 9/5 + 32','K = °C + 273','Divida km/h por 3,6 para obter m/s'][k]+` → ${fp(c)} ${u}.`}
+ return{t,o:wr(c,y=>fp(y)+' '+u),e}};
+const mm=()=>[[R(1,9),R(1,9)],[R(1,9),R(1,9)]],ms=M=>'['+M.map(r=>'['+r.join(', ')+']').join(', ')+']',md=(A,B)=>`<div style="display:flex;gap:28px;flex-wrap:wrap"><div>A${mtx(A)}</div><div>B${mtx(B)}</div></div>`;
+const mv=M=>[ms(M),...[[0,0,1],[1,1,-1],[0,1,2]].map(([r,c,k])=>{const N=M.map(a=>[...a]);N[r][c]+=k;return ms(N)})];
+const GMx=i=>{const A=mm(),B=mm();
+ if(i<3){const r=R(1,2),c=R(1,2),y=A[r-1][c-1];return{t:`Qual elemento está na posição [${r},${c}] da matriz A? (linha ${r}, coluna ${c})`,x:md(A,B),o:wi(y),e:`Na linha ${r}, coluna ${c} de A está o número ${y}.`}}
+ if(i<7){const S=A.map((p,a)=>p.map((y,b)=>y+B[a][b]));return{t:'Qual é o resultado de A + B?',x:md(A,B),o:mv(S),e:'Some elemento a elemento: '+ms(S)+'.'}}
+ if(i%2){const d=A[0][0]*A[1][1]-A[0][1]*A[1][0];return{t:'Qual é o determinante de A?',x:md(A,B),o:wi(d),e:`det = a·d − b·c = ${A[0][0]}·${A[1][1]} − ${A[0][1]}·${A[1][0]} = ${d}.`}}
+ const P=A.map(p=>B[0].map((_,b)=>p.reduce((s,y,k)=>s+y*B[k][b],0)));return{t:'Qual é o resultado de A × B?',x:md(A,B),o:mv(P),e:'Cada elemento é linha de A × coluna de B: '+ms(P)+'.'}};
+const GMt=i=>{const a=R(2,20),b=R(2,12),c=R(2,9),n=R(3,8),Z=i<4?[[`${a} + ${b}`,a+b],[`${a+b} − ${b}`,a],[`${b} × ${c}`,b*c]]:i<8?[[`${a} + ${b} × ${c}`,a+b*c],[`(${a} + ${b}) × ${c}`,(a+b)*c],[`${a*c} ÷ ${c} + ${b}`,a+b]]:[[`√${c*c} + ${b}²`,c+b*b],[`${c}² − ${b}`,c*c-b],[`2^${n}`,2**n]],z=pk(Z);
+ return{t:`Quanto é ${z[0]}?`,o:wi(z[1]),e:`Resultado: ${z[1]}. Ordem: parênteses, potências e raízes, × e ÷, depois + e −.`}};
+const GN={'d-mat':GMt,'d-en':GEn,'d-gr':GGr,'d-geo':GGm,'d-conv':GCv,'d-pct':GP,'d-mx':GMx};
+
+/* ===== Páginas das ferramentas ===== */
+const inp=(l,d,i,f)=>`<label>${l}<input id=${i} type=number step=any value=${d} oninput=${f}></label>`;
+const PH={calc:()=>calcP(0),sci:()=>calcP(1),
+ pct:()=>`<label>Tipo de cálculo<select id=pm onchange=pmR()>${Object.entries(PM).map(([k,m])=>`<option value=${k}>${m[0]}</option>`).join('')}</select></label><div id=pi></div><div id=pr></div><p class=m style="font-size:.8rem">Tabela do INSS: valores de 2023, como já estavam no arquivo original.</p>`,
+ mat:()=>`<div class=two><label>Matriz A (linhas em linhas, números separados por espaço)<textarea id=ma rows=4>1 2\n3 4</textarea></label><label>Matriz B<textarea id=mb rows=4>5 6\n7 8</textarea></label></div><label>Operação<select id=mo onchange=mxRun()><option value="+">A + B</option><option value="-">A − B</option><option value="*">A × B</option><option value="t">Transposta de A</option><option value="d">Determinante de A</option></select></label><button class="btn p" onclick=mxRun()>Calcular</button><div id=mr class=res></div>`,
+ eq:()=>`<label>Tipo<select id=eg onchange=eqRun()><option value=1>1º grau: ax + b = 0</option><option value=2>2º grau: ax² + bx + c = 0</option></select></label><div class=two>${inp('a',1,'ea','eqRun()')}${inp('b',-5,'eb','eqRun()')}${inp('c (só no 2º grau)',6,'ec','eqRun()')}</div><div id=er></div>`,
+ nb:()=>`<textarea id=nbt rows=14 oninput=nbS() placeholder="Escreva contas e anotações. Termine uma linha com = para calcular. Ex.: 12*3+4 =">${esc(ls('ff_nb',''))}</textarea><p><button class="btn p" onclick=nbCalc()>Calcular linhas com =</button> <button class=btn onclick="if(confirm('Limpar o caderno?')){$('nbt').value='';nbS()}">Limpar</button></p><p class=m>Salvo automaticamente neste navegador.</p>`,
+ conv:()=>`<label>Grandeza<select id=cvc onchange=cvCat()>${Object.keys(U).map(k=>`<option>${k}</option>`).join('')}</select></label>${inp('Valor',1,'cvv','cvUp()')}<div class=two><label>De<select id=cvf onchange=cvUp()></select></label><label>Para<select id=cvt onchange=cvUp()></select></label></div><button class=btn onclick=cvSw()>⇄ Inverter</button><div id=cvr class=res></div>`,
+ en:()=>inp('Potência do aparelho (W)',1500,'ep','enC()')+inp('Horas de uso por dia',2,'eh','enC()')+inp('Dias de uso por mês',30,'ed','enC()')+inp('Tarifa (R$/kWh)',.75,'et','enC()')+'<div id=er2></div>',
+ geo:()=>`<label>Figura<select id=gs onchange=geS()>${Object.keys(GEO).map(k=>`<option>${k}</option>`).join('')}</select></label><div id=gi></div><div id=gr2></div>`,
+ gr:()=>`<div class=two><div><label>Função(ões) — separe várias com ;<input id=gf value="y = x²" oninput=grUp()></label><div class=two>${inp('x mínimo',-5,'gx0','grUp()')}${inp('x máximo',5,'gx1','grUp()')}</div>${inp('Calcular y para x =',2,'gxv','grUp()')}<div id=gm></div></div><canvas id=gc width=640 height=420 style="width:100%;border-radius:8px"></canvas></div>`,
+ bd:()=>`<div class=two style="grid-template-columns:2fr 1fr"><div><textarea id=sq rows=5 onkeydown="if(event.ctrlKey&&event.key=='Enter')bdRun()">SELECT * FROM clientes;</textarea><p><button class="btn p" onclick=bdRun()>▶ Executar (Ctrl+Enter)</button> <button class=btn onclick=bdReset()>Restaurar banco</button></p><select onchange="if(this.selectedIndex){$('sq').value=this.value;this.selectedIndex=0}"><option>Exemplos de comandos…</option>${EX.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join('')}</select><div id=bdr class=res style="font-weight:400"></div></div><div><b>Tabelas (clique para ver)</b><div id=bdt></div></div></div>`};
+const PI={pct:pmR,conv:cvCat,en:enC,geo:geS,gr:grUp,mat:mxRun,eq:eqRun,bd:()=>{bdLoad();bdTabs()}};
+
+/* ===== Menu, cards e rotas ===== */
+const FER=[['🧮 Matemática',[['calc','🔢','Calculadora de 4 operações','Soma, subtração, multiplicação e divisão'],['sci','🧮','Calculadora científica','sen, cos, tan, log, raiz, potência, π e e'],['pct','％','Porcentagem','Aumento, desconto, INSS e média ponderada'],['mat','🔷','Matrizes','Soma, produto, transposta e determinante'],['eq','✏️','Equações','1º e 2º grau com Δ'],['nb','📓','Caderno','Anote contas e continue depois']]],
+ ['🔬 Ciências',[['conv','🔄','Conversor de unidades','Comprimento, massa, tempo, temperatura, velocidade e volume']]],
+ ['⚡ Elétrica',[['en','⚡','Consumo elétrico','kWh por dia e por mês, e o custo na conta']]],
+ ['📐 Geometria',[['geo','📐','Geometria','Áreas, perímetros, ângulos e volumes (cubo, esfera, cilindro, cone…)']]],
+ ['📊 Gráficos',[['gr','📈','Calculadora gráfica','Digite y = x² e veja o gráfico']]],
+ ['💾 Banco de Dados',[['bd','💾','Laboratório SQL','Crie tabelas, insira, consulte, filtre e ordene']]]];
+const DES=[['d-mat','🧮','Desafio de Matemática','Operações e expressões'],['d-en','⚡','Desafio de Consumo Elétrico','Potência × tempo'],['d-gr','📊','Desafio de Gráficos','Identifique funções e valores'],['d-sql','💾','Desafio SQL','Consultas, JOIN e erros — 4 níveis'],['d-geo','📐','Desafio de Geometria','Áreas, perímetros e volumes'],['d-conv','🔄','Desafio de Conversão','Unidades do dia a dia'],['d-pct','🔢','Desafio de Porcentagem','Descontos e proporções'],['d-mx','🔷','Desafio de Matrizes','Soma, posição e determinante']];
+const card=c=>`<div class=card onclick="location.hash='${c[0]}'"><i>${c[1]}</i><b>${c[2]}</b><small>${c[3]}</small></div>`;
+function route(){clearInterval(TM);const h=location.hash.slice(1),a=$('app');
+ if(!h||h=='d'){a.innerHTML=`<div class=tabs><button class="btn ${h?'':'on'}" onclick="location.hash=''">🛠️ Ferramentas</button><button class="btn ${h?'on':''}" onclick="location.hash='d'">🎮 Desafios</button></div>`+
+  (h?`<p class=m>Teste seus conhecimentos e ganhe pontos. As calculadoras ficam na aba Ferramentas.</p><div class=grid>${DES.map(card).join('')}</div>`:FER.map(c=>`<h3 class=cat>${c[0]}</h3><div class=grid>${c[1].map(card).join('')}</div>`).join(''));return}
+ const it=[...FER.flatMap(c=>c[1]),...DES].find(x=>x[0]==h);if(!it){location.hash='';return}
+ a.innerHTML=`<button class=btn onclick="location.hash='${h[1]=='-'?'d':''}'">← Voltar</button><h2>${it[1]} ${it[2]}</h2><div id=pn class=panel></div>`;
+ if(PH[h]){$('pn').innerHTML=PH[h]();PI[h]&&PI[h]()}
+ else if(h=='d-sql')$('pn').innerHTML='<p>Escolha como jogar. Cada rodada tem até 10 perguntas de múltipla escolha.</p>'+[[0,'🎯 Progressivo — mistura os níveis, do fácil ao difícil'],[1,'Nível 1 — SELECT, FROM, WHERE, ORDER BY, INSERT'],[2,'Nível 2 — UPDATE, DELETE, AND, OR, LIKE, LIMIT'],[3,'Nível 3 — COUNT, AVG, SUM, GROUP BY, JOIN'],[4,'Avançado — JOINs, agrupamentos, resultados e erros']].map(([l,t])=>`<button class="btn opt" onclick="sqlStart(${l})">${t}</button>`).join('');
+ else quiz(GN[h],10)}
+window.onhashchange=route;route();
+</script></body></html>

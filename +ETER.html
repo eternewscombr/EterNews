@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>+ETER | Eter News</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+  <!-- Favicons -->
+  <link rel="icon" href="LOGOS/icon_EterNews-preto.ico" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="icon/icon_EterNews-branco.ico" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#000000">
+
+  <style>
+    /* ============================================================
+       DESIGN SYSTEM — VARIÁVEIS GLOBAIS
+    ============================================================ */
+    :root {
+      /* Paleta */
+      --color-bg:           #000000;
+      --color-surface-1:    #0d0d0d;
+      --color-surface-2:    #141414;
+      --color-surface-3:    #1e1e1e;
+      --color-border:       rgba(255,255,255,0.08);
+      --color-border-hover: rgba(255,255,255,0.22);
+      --color-white:        #ffffff;
+      --color-gray-100:     #f5f5f5;
+      --color-gray-300:     #b0b0b0;
+      --color-gray-500:     #6b6b6b;
+        --color-gold:         #f0b429;
+
+      /* Tipografia */
+      --font-base:   'Inter', sans-serif;
+      --text-xs:     0.72rem;
+      --text-sm:     0.875rem;
+      --text-base:   1rem;
+      --text-lg:     1.125rem;
+      --text-xl:     1.35rem;
+      --text-2xl:    1.625rem;
+      --text-3xl:    2rem;
+      --text-4xl:    2.75rem;
+      --text-5xl:    3.75rem;
+
+      /* Escala de espaçamento (base 4 px) */
+      --sp-1:  4px;
+      --sp-2:  8px;
+      --sp-3:  12px;
+      --sp-4:  16px;
+      --sp-5:  20px;
+      --sp-6:  24px;
+      --sp-8:  32px;
+      --sp-10: 40px;
+      --sp-12: 48px;
+      --sp-16: 64px;
+      --sp-20: 80px;
+
+      /* Bordas */
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   16px;
+      --radius-xl:   24px;
+      --radius-full: 9999px;
+
+      /* Sombras */
+      --shadow-sm:  0 1px 3px  rgba(0,0,0,0.5);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.6);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,0.75);
+
+      /* Transições */
+      --t-fast: 150ms ease;
+      --t-base: 260ms ease;
+      --t-slow: 420ms ease;
+
+      /* Layout */
+      --max-width:  1140px;
+      --nav-height: 68px;
+      --nav-h:      68px;
+      --max-w:      1140px;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-base);
+      background-color: var(--color-bg);
+      color: var(--color-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+    ul  { list-style: none; }
+    h1,h2,h3,h4,h5 { line-height: 1.2; font-weight: 700; }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--sp-6);
+    }
+
+    /* ── NAVBAR ── */
+    .site-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1000;
+        height: var(--nav-h);
+        background: rgba(0,0,0,0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--color-border);
+        transition: background var(--t-base);
+    }
+    .site-header.scrolled { background: rgba(0,0,0,0.97); }
+
+    .nav-inner {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-6);
+        padding: 0 var(--sp-6);
+    }
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-shrink: 0;
+    }
+    .nav-logo img { height: 38px; }
+    .nav-logo-text {
+        font-size: var(--text-xl);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+    }
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        flex: 1;
+    }
+    .nav-links a {
+        font-size: var(--text-xs);
+        font-weight: 600;
+        color: var(--color-gray-300);
+        padding: var(--sp-2) var(--sp-3);
+        border-radius: var(--radius-sm);
+        transition: color var(--t-fast), background var(--t-fast);
+        white-space: nowrap;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: var(--color-white);
+        background: rgba(255,255,255,0.08);
+    }
+    .nav-social {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-shrink: 0;
+    }
+    .nav-social a {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.15);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem;
+        color: var(--color-gray-300);
+        transition: all var(--t-fast);
+    }
+    .nav-social a:hover {
+        color: var(--color-white);
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.08);
+    }
+    .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px; height: 40px;
+        cursor: pointer;
+        padding: var(--sp-2);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        border: none;
+        margin-left: auto;
+        transition: background var(--t-fast);
+    }
+    .nav-hamburger:hover { background: rgba(255,255,255,0.08); }
+    .nav-hamburger span {
+        display: block;
+        width: 100%; height: 2px;
+        background: var(--color-white);
+        border-radius: 2px;
+        transition: transform var(--t-base), opacity var(--t-base);
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-mobile-panel {
+        display: none;
+        position: fixed;
+        top: var(--nav-h); left: 0; right: 0;
+        background: rgba(5,5,5,0.97);
+        backdrop-filter: blur(20px);
+        z-index: 999;
+        padding: var(--sp-6);
+        flex-direction: column;
+        gap: var(--sp-2);
+        border-bottom: 1px solid var(--color-border);
+        animation: slideDown 0.2s ease;
+    }
+    .nav-mobile-panel.open { display: flex; }
+    .nav-mobile-panel a {
+        font-size: var(--text-base);
+        font-weight: 600;
+        color: var(--color-gray-300);
+        padding: var(--sp-3) var(--sp-4);
+        border-radius: var(--radius-md);
+        transition: color var(--t-fast), background var(--t-fast);
+    }
+    .nav-mobile-panel a:hover {
+        color: var(--color-white);
+        background: rgba(255,255,255,0.06);
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+        position: relative;
+        min-height: 420px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding-top: var(--nav-h);
+        background:
+            linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.88) 100%),
+            url('https://quintinews.wordpress.com/wp-content/uploads/2012/05/imagem-085.jpg') center/cover no-repeat;
+    }
+    .hero-content {
+        text-align: center;
+        padding: var(--sp-12) var(--sp-6);
+        animation: fadeInUp 0.8s ease both;
+    }
+    .hero-eyebrow {
+        display: inline-block;
+        font-size: var(--text-xs);
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-gold);
+        background: rgba(240,180,41,0.10);
+        border: 1px solid rgba(240,180,41,0.28);
+        padding: var(--sp-1) var(--sp-4);
+        border-radius: var(--radius-full);
+        margin-bottom: var(--sp-5);
+    }
+    .hero-title {
+        font-size: clamp(var(--text-4xl), 8vw, var(--text-5xl));
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1;
+    }
+    .hero-sub {
+        margin-top: var(--sp-5);
+        font-size: var(--text-base);
+        color: var(--color-gray-300);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       SECTIONS
+    ============================================================ */
+    .section        { padding: var(--sp-16) 0; }
+    .section--alt   { background: var(--color-surface-1); }
+
+    .section__header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-10);
+    }
+
+    .section__bar {
+      width: 4px; height: 32px;
+      background: var(--color-white);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .section__title em {
+      font-style: normal;
+      color: var(--color-gold);
+    }
+
+    /* ============================================================
+       PROJETOS — SWIPER
+    ============================================================ */
+    .swiper {
+      width: 100%;
+      padding: var(--sp-4) 0 var(--sp-10) !important;
+    }
+
+    .swiper-slide {
+      height: auto;
+      display: flex;
+    }
+
+    /* Project card */
+    .project-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--color-border-hover);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .project-card__thumb {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      background: var(--color-surface-3);
+    }
+
+    .project-card__thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform var(--t-slow);
+    }
+
+    .project-card:hover .project-card__thumb img { transform: scale(1.05); }
+
+    .project-card__body {
+      padding: var(--sp-5) var(--sp-6) var(--sp-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      flex: 1;
+    }
+
+    .project-card__title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+    }
+
+    .project-card__desc {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .project-card__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-white);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: var(--radius-sm);
+      padding: var(--sp-2) var(--sp-4);
+      align-self: flex-start;
+      margin-top: var(--sp-2);
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+    }
+
+    .project-card__btn:hover {
+      background: var(--color-white);
+      border-color: var(--color-white);
+      color: var(--color-bg);
+    }
+
+    /* Swiper controls */
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: var(--color-white) !important;
+      background: rgba(255,255,255,0.08) !important;
+      border: 1px solid var(--color-border) !important;
+      border-radius: var(--radius-full) !important;
+      width: 44px !important; height: 44px !important;
+      transition: background var(--t-fast) !important;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover { background: rgba(255,255,255,0.18) !important; }
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after { font-size: 14px !important; font-weight: 700 !important; }
+
+    .swiper-pagination-bullet {
+      background: rgba(255,255,255,0.3) !important;
+      opacity: 1 !important;
+      width: 8px !important; height: 8px !important;
+      transition: width var(--t-fast), background var(--t-fast) !important;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: var(--color-white) !important;
+      width: 24px !important;
+      border-radius: var(--radius-full) !important;
+    }
+
+    /* ============================================================
+       OUTROS CURSOS
+    ============================================================ */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--sp-6);
+    }
+
+    .course-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-5);
+      padding: var(--sp-5);
+      transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .course-card__img {
+      width: 88px; height: 88px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--color-border-hover);
+    }
+
+    .course-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      flex: 1;
+    }
+
+    .course-card__title {
+      font-size: var(--text-base);
+      font-weight: 700;
+    }
+
+    .course-card__desc {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      line-height: 1.55;
+    }
+
+    .course-card__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-white);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: var(--radius-sm);
+      padding: 6px var(--sp-3);
+      align-self: flex-start;
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+    }
+
+    .course-card__btn:hover {
+      background: var(--color-white);
+      border-color: var(--color-white);
+      color: var(--color-bg);
+    }
+
+    /* ============================================================
+       DESTAQUES
+    ============================================================ */
+    .highlights-lead {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-8);
+    }
+
+    .highlights-lead img {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-full);
+    }
+
+    .highlights-lead h2 {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: var(--color-gold);
+      letter-spacing: -0.01em;
+    }
+
+    .highlight-block {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .highlight-block__head {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-5) var(--sp-6);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .highlight-block__logo {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      border: 2px solid var(--color-border-hover);
+      flex-shrink: 0;
+    }
+
+    .highlight-block__name {
+      font-size: var(--text-lg);
+      font-weight: 700;
+    }
+
+    .news-item {
+      display: flex;
+      gap: var(--sp-5);
+      padding: var(--sp-6);
+      border-bottom: 1px solid var(--color-border);
+      transition: background var(--t-fast);
+    }
+
+    .news-item:last-child { border-bottom: none; }
+    .news-item:hover { background: rgba(255,255,255,0.025); }
+
+    .news-item__img {
+      width: 180px; height: 130px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .news-item__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      justify-content: center;
+    }
+
+    .news-item__title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .news-item__text {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-surface-1);
+      border-top: 1px solid var(--color-border);
+      padding: var(--sp-16) 0 var(--sp-8);
+      margin-top: var(--sp-20);
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1fr 1fr;
+      gap: var(--sp-10);
+      margin-bottom: var(--sp-10);
+    }
+
+    .footer__logo-img {
+      width: 70px;
+      margin-bottom: var(--sp-5);
+    }
+
+    .footer__about {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      line-height: 1.7;
+    }
+
+    .footer__col-title {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-white);
+      margin-bottom: var(--sp-6);
+      position: relative;
+      padding-bottom: var(--sp-3);
+    }
+
+    .footer__col-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 24px; height: 2px;
+      background: var(--color-white);
+      border-radius: 2px;
+    }
+
+    .footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .footer__links a {
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      transition: color var(--t-fast);
+    }
+
+    .footer__links a:hover { color: var(--color-white); }
+
+    .footer__contact-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      font-size: var(--text-sm);
+      color: var(--color-gray-300);
+      margin-bottom: var(--sp-3);
+    }
+
+    .footer__contact-row a {
+      color: inherit;
+      transition: color var(--t-fast);
+    }
+
+    .footer__contact-row a:hover { color: var(--color-white); }
+
+    .footer__contact-note {
+      font-size: var(--text-sm);
+      color: var(--color-gray-500);
+      margin-top: var(--sp-2);
+    }
+
+    .footer__socials {
+      display: flex;
+      gap: var(--sp-3);
+      flex-wrap: wrap;
+    }
+
+    .footer__social {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-base);
+      color: var(--color-gray-300);
+      transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast), transform var(--t-base);
+    }
+
+    .footer__social:hover {
+      background: var(--color-white);
+      color: var(--color-bg);
+      border-color: var(--color-white);
+      transform: translateY(-3px);
+    }
+
+    .footer__bottom {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--sp-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+    }
+
+    .footer__copy {
+      font-size: var(--text-xs);
+      color: var(--color-gray-500);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .footer__grid { grid-template-columns: 1fr 1fr; gap: var(--sp-8); }
+    }
+
+    @media (max-width: 768px) {
+      :root { --nav-h: 58px; }
+      .nav-links, .nav-social { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .section  { padding: var(--sp-12) 0; }
+      .hero { min-height: 320px; }
+      .hero-title { font-size: var(--text-4xl); }
+
+      .courses-grid { grid-template-columns: 1fr; }
+
+      .course-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .news-item {
+        flex-direction: column;
+      }
+
+      .news-item__img {
+        width: 100%;
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .footer__grid { grid-template-columns: 1fr; gap: var(--sp-8); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAVBAR ── -->
+<header class="site-header" id="site-header">
+    <div class="nav-inner">
+        <a href="index Eter news.html" class="nav-logo">
+            <img src="https://i.ibb.co/39Bkx3KJ/20250322-195214.png" alt="Eter News">
+            <span class="nav-logo-text">ETER NEWS</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index Eter news.html">Home</a>
+            <a href="Avisos eter.html">Avisos</a>
+            <a href="+ETER.html" class="active">+Eter</a>
+            <a href="esportes EterNews.html">Esportes</a>
+            <a href="Sobre Nos.html">Sobre Nós</a>
+            <a href="CONTAGEM.html">Agenda</a>
+            <a href="Historia da Eter.html">História</a>
+            <a href="Bem-estar.html">Bem-Estar</a>
+            <a href="jogos.html">Jogos</a>
+            <a href="Área de Estudo.html">Estudos</a>
+        </nav>
+
+        <div class="nav-social">
+            <a href="https://www.instagram.com/eter_news/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="http://tiktok.com/@eter_news" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://x.com/Eter_News" target="_blank" aria-label="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+        </div>
+
+        <button class="nav-hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile nav -->
+<nav class="nav-mobile-panel" id="mobile-panel">
+    <a href="index Eter news.html">Home</a>
+    <a href="Avisos eter.html">Avisos</a>
+    <a href="+ETER.html">+Eter</a>
+    <a href="esportes EterNews.html">Esportes</a>
+    <a href="Sobre Nos.html">Sobre Nós</a>
+    <a href="CONTAGEM.html">Agenda</a>
+    <a href="Historia da Eter.html">História</a>
+    <a href="Bem-estar.html">Bem-Estar</a>
+    <a href="jogos.html">Jogos</a>
+    <a href="Área de Estudo.html">Estudos</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-content">
+        <p class="hero-eyebrow">Portal Estudantil</p>
+        <h1 class="hero-title">+ETER</h1>
+        <p class="hero-sub">Conheça os projetos, cursos e iniciativas que movem a ETE República.</p>
+    </div>
+</section>
+
+  <!-- ===== PROJETOS ===== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="section__header">
+        <div class="section__bar"></div>
+        <h2 class="section__title">Projetos <em>Escolares</em></h2>
+      </div>
+
+      <div class="swiper projects-swiper">
+        <div class="swiper-wrapper">
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/DH51GJJc/f8df02d6-583b-4b26-ac1b-ed182652f68c.jpg" alt="Multiplicadores">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Multiplicadores</h3>
+                <p class="project-card__desc">Projeto que apoia alunos com dificuldades nas matérias, oferecendo suporte pedagógico entre pares.</p>
+                <a href="https://www.instagram.com/alunomultiplicador?igsh=YTE5OTcxcTluc211" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/8g1dx3R4/imagem-2026-03-29-155615565.png" alt="Sala de Recursos">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Sala de Recursos</h3>
+                <p class="project-card__desc">Espaço de apoio inclusivo com suporte pedagógico para alunos com necessidades especiais.</p>
+                <a href="https://www.instagram.com/saladerecursos.eter?igsh=em9lcGhseHZ6b3Ft" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/qLHMJntT/f05f1033-a459-4b23-a184-f58742e851fb.jpg" alt="Projeto Vida">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Projeto Vida</h3>
+                <p class="project-card__desc">Orienta os alunos na construção de metas pessoais, acadêmicas e profissionais.</p>
+                <a href="https://www.instagram.com/projetovidafaetec?igsh=MXMwaHhxa3VhMHVxZw%3D%3D" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/BkRcvzc/9f5cd786-4e40-4cb6-b401-6657383f50df.jpg" alt="Movimento Ápice">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Movimento Ápice</h3>
+                <p class="project-card__desc">Movimento estudantil que incentiva o protagonismo e a transformação dentro da escola.</p>
+                <a href="https://www.instagram.com/movimentoapice?igsh=MWd2NnQ5N2s2Z21pMw%3D%3D" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/NnsTVN6z/9de63154-228a-4bbe-9417-76ffcc336716.jpg" alt="Centro de Memória ETER">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Centro de Memória ETER</h3>
+                <p class="project-card__desc">Resgata e preserva a história da república, promovendo identidade e conhecimento cultural.</p>
+                <a href="https://www.instagram.com/centrodememoriaeter?igsh=dXRxZzBoZjA3eHMy" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/jP63t9gr/9a9c7665-d16b-4ac8-9d77-bedae1e135d1.jpg" alt="CART">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">CART</h3>
+                <p class="project-card__desc">Voltado à saúde mental, promovendo pesquisa, apoio e conscientização científica.</p>
+                <a href="https://www.instagram.com/cart_eter_quintino?igsh=MTJrcHU1Z2Q2cXZjOA%3D%3D" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/nsV0D3Zh/4d6e7276-8389-497f-bd26-d396861b6a93.jpg" alt="N.E.L.">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">N.E.L.</h3>
+                <p class="project-card__desc">Projeto que apoia alunos com dificuldades nas matérias, oferecendo suporte especializado.</p>
+                <a href="https://www.instagram.com/nel_ete_republica?igsh=MTNsOWhidzY0YnpsNQ%3D%3D" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="project-card">
+              <div class="project-card__thumb">
+                <img src="https://i.ibb.co/yFbQNjCB/9c7fbe13-a43d-4b35-a397-59902bcc65df.jpg" alt="Poison Girls">
+              </div>
+              <div class="project-card__body">
+                <h3 class="project-card__title">Poison Girls</h3>
+                <p class="project-card__desc">Iniciativa de empoderamento feminino dentro do ambiente escolar da ETER.</p>
+                <a href="https://www.instagram.com/poisongirls.eter?igsh=MWZza3Z5ZjE5aGd5MA%3D%3D" class="project-card__btn" target="_blank" rel="noopener">
+                  <i class="fab fa-instagram"></i> Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== OUTROS CURSOS ===== -->
+  <section class="section section--alt">
+    <div class="container">
+
+      <div class="section__header">
+        <div class="section__bar"></div>
+        <h2 class="section__title">Outros <em>Cursos</em></h2>
+      </div>
+
+      <div class="courses-grid">
+
+        <div class="course-card">
+          <img src="https://i.ibb.co/4Z2YPNMm/07830f37-ecdb-41b9-9a9f-47d19674bc2f.jpg" alt="Escola de Teatro" class="course-card__img">
+          <div class="course-card__body">
+            <h3 class="course-card__title">Escola de Teatro</h3>
+            <p class="course-card__desc">Capacitar o estudante para desenvolver sua potência artística através de conhecimentos técnicos e conceituais da arte teatral.</p>
+            <a href="https://www.instagram.com/quintino.teatro?igsh=c3U5bXNjaG1yc3p1" class="course-card__btn" target="_blank" rel="noopener">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <img src="https://i.ibb.co/Q7cRPtwP/69dfb58c-7459-4ba7-8007-ae0b272439fc.jpg" alt="Escola de Beleza" class="course-card__img">
+          <div class="course-card__body">
+            <h3 class="course-card__title">Escola de Beleza</h3>
+            <p class="course-card__desc">Formar profissionais capacitados para atuar no mercado de beleza, com técnicas e tendências atuais.</p>
+            <a href="https://www.instagram.com/escoladebeleza.quintino?igsh=MXEyN3E2YW1wazMxeg%3D%3D" class="course-card__btn" target="_blank" rel="noopener">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <img src="https://i.ibb.co/s90TWYfw/d4923f01-d929-4025-964b-75e1cff5e5ec.jpg" alt="Escola de Hotelaria" class="course-card__img">
+          <div class="course-card__body">
+            <h3 class="course-card__title">Escola de Hotelaria</h3>
+            <p class="course-card__desc">Preparar alunos para atuar em diversas áreas do setor hoteleiro, com foco em atendimento e gestão.</p>
+            <a href="https://www.instagram.com/hotfaetecquintino?igsh=a2x6dHJ0MzB5MDRr" class="course-card__btn" target="_blank" rel="noopener">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DESTAQUES ===== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="highlights-lead">
+        <img src="https://i.ibb.co/d0q9DKrY/1757264788506-1.png" alt="Destaques">
+        <h2>Destaques</h2>
+      </div>
+
+      <div class="highlight-block">
+
+        <div class="highlight-block__head">
+          <img src="https://i.ibb.co/BkRcvzc/9f5cd786-4e40-4cb6-b401-6657383f50df.jpg" alt="Movimento Ápice" class="highlight-block__logo">
+          <span class="highlight-block__name">Movimento Ápice</span>
+        </div>
+
+        <div class="news-item">
+          <img src="LOGOS/apice protresto.jpeg" alt="Ato Unificado das FAETECs" class="news-item__img">
+          <div class="news-item__body">
+            <h4 class="news-item__title">Estudantes realizam Ato Unificado das FAETECs</h4>
+            <p class="news-item__text">Na última sexta (28/03), alunos de várias unidades da FAETEC participaram do Ato Unificado para cobrar melhorias no ensino. O Movimento Ápice representou a ETE República e destacou a importância da união e da mobilização estudantil.</p>
+          </div>
+        </div>
+
+        <div class="news-item">
+          <img src="LOGOS/Apice festa junina.jpeg" alt="Festa Julina" class="news-item__img">
+          <div class="news-item__body">
+            <h4 class="news-item__title">ETER realiza Festa Julina com apoio da comunidade escolar</h4>
+            <p class="news-item__text">Na quinta-feira (17/07), a ETER promoveu sua Festa Julina com grande participação dos alunos. O evento só foi possível graças ao apoio da direção, coordenação, líderes de torcida e demais estudantes que ajudaram a tornar a celebração especial.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+
+      <div class="footer__grid">
+
+        <div>
+          <img src="https://i.ibb.co/gL0Z997g/20250324-003205.png" alt="Eter News" class="footer__logo-img">
+          <p class="footer__about">A plataforma da ETER República mantém alunos e a comunidade escolar atualizados sobre notícias, eventos e oportunidades em tempo real, facilitando o acesso a informações e garantindo que ninguém perca eventos ou chances profissionais.</p>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Contato</h4>
+          <div class="footer__contact-row">
+            <i class="far fa-envelope"></i>
+            <a href="mailto:Eternews.com.br@gmail.com">Eternews.com.br@gmail.com</a>
+          </div>
+          <p class="footer__contact-note">Envie suas sugestões e entre em contato conosco.</p>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Links</h4>
+          <ul class="footer__links">
+            <li><a href="index Eter news.html">Home</a></li>
+            <li><a href="Sobre Nos.html">Sobre Nós</a></li>
+            <li><a href="Avisos eter.html">Avisos</a></li>
+            <li><a href="CONTAGEM.html">Agenda</a></li>
+            <li><a href="+ETER.html">+Eter</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Redes Sociais</h4>
+          <div class="footer__socials">
+            <a href="https://www.instagram.com/eter_news/" target="_blank" rel="noopener noreferrer" class="footer__social" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@eter_news?_t=ZM-8zhm0i7zPVO&_r=1" target="_blank" rel="noopener noreferrer" class="footer__social" aria-label="TikTok">
+              <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="https://x.com/Eter_News?t=UPmY4BzpO-I4j1eXA9PR1w&s=08" target="_blank" rel="noopener noreferrer" class="footer__social" aria-label="Twitter / X">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">&copy; 2025 Eter News — ETE República. Todos os direitos reservados.</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    /* ── NAVBAR SCROLL ── */
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+        siteHeader.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── HAMBURGER ── */
+    const hamburger   = document.getElementById('hamburger');
+    const mobilePanel = document.getElementById('mobile-panel');
+
+    hamburger.addEventListener('click', () => {
+        const open = mobilePanel.classList.toggle('open');
+        hamburger.classList.toggle('open', open);
+        hamburger.setAttribute('aria-expanded', open);
+    });
+    mobilePanel.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            mobilePanel.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', false);
+        });
+    });
+    document.addEventListener('click', (e) => {
+        if (!siteHeader.contains(e.target) && !mobilePanel.contains(e.target)) {
+            mobilePanel.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', false);
+        }
+    });
+
+    /* Swiper */
+    new Swiper('.projects-swiper', {
+      loop: true,
+      spaceBetween: 24,
+      slidesPerView: 1,
+      grabCursor: true,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        560: { slidesPerView: 2 },
+        900: { slidesPerView: 3 },
+      },
+    });
+  </script>
+
+</body>
+</html>
