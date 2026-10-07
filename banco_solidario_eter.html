@@ -836,11 +836,11 @@ function meUser(){const id=DB.getMe();const u=id&&DB.getUsers().find(x=>x.id===i
 async function hashPw(pw,salt){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+pw));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 function needLogin(){showToast('Entre na sua conta para fazer isso.','info');nav('conta')}
 function stars(n){return'<span class="stars">'+'★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n))+'</span>'}
-function seedDonors(){if(DB._r('seedDonors2',false)||DB.getDoacoes().length===0)return;
-  const mk=(n,t,b,e)=>({id:uid('u'),nome:n,email:e,turma:t,bio:b,foto:'',salt:'',hash:'',demo:true,entrou:'2025-03-10T10:00:00.000Z'});
+function seedDonors(){if(DB._r('seedDonors2',false))return;
+  const mk=(n,t,b,e)=>(DB.getUsers().find(x=>x.nome===n&&x.demo)||{id:uid('u'),nome:n,email:e,turma:t,bio:b,foto:'',salt:'',hash:'',demo:true,entrou:'2025-03-10T10:00:00.000Z'});
   const us=DB.getUsers(),L=mk('Lucas Ferreira','3º Ano — Informática','Formando em Informática. Gosto de passar adiante o material que me ajudou durante o curso.','lucas.demo@eter.local');L.verificado=true;
   const M=mk('Mariana Souza','2º Ano — Administração','Doo o que sobra de cada semestre para quem precisa.','mariana.demo@eter.local'),R=mk('Rafael Lima','3º Ano — Edificações','Material técnico em ótimo estado.','rafael.demo@eter.local');
-  us.push(L,M,R);DB.saveUsers(us);const arr=[L,M,R];
+  [L,M,R].forEach(u=>{if(!us.some(x=>x.id===u.id))us.push(u)});DB.saveUsers(us);const arr=[L,M,R];
   const ds=DB.getDoacoes();let k=0;ds.forEach(d=>{if(!d.donorId&&!d._mine){const u=arr[k++%3];d.donorId=u.id;d.doador=u.nome}});DB.saveDoacoes(ds);
   const sc=DB.getSocial(),T=['Pessoa muito educada e entregou tudo certinho.','Doação excelente, tudo conforme anunciado.','Foi muito atencioso e explicou tudo direitinho.'];
   [[L,5,0,'Letícia'],[L,5,1,'Matheus'],[L,4,2,'Ana Clara'],[M,5,1,'Pedro'],[M,4,0,'Julia'],[R,5,2,'Bruno']].forEach(([u,n,ti,nm],i)=>sc.ratings.push({id:uid('r'),pedidoId:'demo'+i,doacaoId:'',donorId:u.id,raterId:'demo',raterNome:nm,nota:n,texto:T[ti],data:'2026-0'+(3+i%5)+'-15T12:00:00.000Z'}));
@@ -2760,8 +2760,8 @@ const PH=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCA
 CATS.includes('Jalecos e proteção')||CATS.splice(CATS.length-1,0,'Jalecos e proteção');CAT_ICON['Jalecos e proteção']='fa-user-doctor';
 seedDonors();
 const ago=(d,h=0,m=0)=>new Date(Date.now()-d*864e5-h*36e5-m*6e4).toISOString(),ymd=o=>new Date(Date.now()+o*864e5).toISOString().slice(0,10);
-const us=DB.getUsers(),U=n=>us.find(u=>u.nome===n);
-const mk=(n,t,b)=>{if(U(n))return;us.push({id:uid('u'),nome:n,email:n.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'.')+'.demo@eter.local',turma:t,bio:b,foto:'',salt:'',hash:'',demo:true,entrou:ago(60+us.length*5)})};
+const us=DB.getUsers(),U=n=>us.find(u=>u.nome===n)||(us.push({id:uid('u'),nome:n,email:n.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'.')+'.demo@eter.local',turma:'',bio:'',foto:'',salt:'',hash:'',demo:true,entrou:ago(60)}),us[us.length-1]);
+const mk=(n,t,b)=>{if(us.find(u=>u.nome===n))return;us.push({id:uid('u'),nome:n,email:n.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'.')+'.demo@eter.local',turma:t,bio:b,foto:'',salt:'',hash:'',demo:true,entrou:ago(60+us.length*5)})};
 mk('Rafael Oliveira','2º Ano — Informática','Curso Informática e estou me preparando para Matemática e Física.');
 mk('Sofia Cardoso','1º Ano — Edificações','Caloura de Edificações, ainda montando meu material.');
 mk('Gabriel Nunes','1º Ano — Edificações','Gosto de desenho técnico.');
@@ -2864,4 +2864,3 @@ DB._w('seedWord1',true);updateNotifBadge&&updateNotifBadge();updateNavConta();re
 </script>
 </body>
 </html>
-
