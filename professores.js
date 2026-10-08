@@ -115,7 +115,7 @@ const professores = [
         genero: "m",
         materia: "História",
         foto: "LOGOS/walter alo.jpeg",   // ex.: "LOGOS/professores/walter-alo.jpg" (vazio = iniciais)
-        descricao: "Apresentação do professor. Substitua por um texto sobre sua trajetória e sua relação com a matéria.",
+        descricao: "",
       posts: postsPadrao([
     "Desde pequeno gostei de ler, o que foi me gerando curiosidade, principalmente em relação a culturas, povos, religiões, o que fui encontrando mais concretamente no estudo da História, da Filosofia. Ser professor, para mim, foi consequência da minha personalidade, de compartilhar, ser solidário, acho. Mas foi um excelente professor que tive no antigo segundo grau que me fez consolidar a vocação do magistério.",
 
